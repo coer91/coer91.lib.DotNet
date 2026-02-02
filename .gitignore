@@ -1,0 +1,65 @@
+# Build results
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates 
+
+# Visual Studio Code
+.vscode/
+
+# ASP.NET Core secrets
+secrets.json
+
+# IIS Express
+.vs/
+*.vspscc
+*.vssscc
+
+# Logs
+*.log
+
+# Publish output
+publish/
+out/
+Properties/PublishProfiles 
+
+# NuGet packages
+*.nupkg
+packages/
+.nuget/
+
+# Resharper
+*.DotSettings.user
+
+# Rider
+.idea/
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Others
+*.dbmdl
+*.pdb
+*.cache
+*.config.user
+
+# Test results
+TestResults/
+*.coverage
+*.coveragexml
+
+# Entity Framework
+Migrations/ 
+
+# Document files
+*.pdf
+*.xls
+*.xlsx
+*.csv 
