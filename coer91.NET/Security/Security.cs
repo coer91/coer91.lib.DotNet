@@ -42,7 +42,7 @@ namespace coer91.NET
         public BearerConfigurationBuilder AddAuthenticationBearer(string secretKey = "") => new(secretKey, _builder);
 
 
-        public CorsConfigurationBuilder AddCors(string policy = "coer91") => new(policy, _builder);
+        public CorsConfigurationBuilder AddCors(string policy = "coer91.NET") => new(policy, _builder);
 
 
         #region static
