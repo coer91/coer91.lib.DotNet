@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization; 
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,26 +10,14 @@ using System.Text;
 
 namespace coer91
 {
-    public class BearerConfigurationBuilder
-    {
-        private readonly IServiceCollection _services;
-        private readonly IConfiguration _configuration; 
+    public class BearerConfigurationBuilder(WebApplicationBuilder _builder) { 
 
         protected string _secretKey = null;
-        protected bool? _addAuthorizationPolicy = null;
+        protected bool _setAutorizationToControllers = false;
         protected bool _validateIssuer = false;
         protected bool _validateAudience = false;
         protected bool _validateLifetime = true;
         protected bool _validateIssuerSigningKey = true;
-
-
-        public BearerConfigurationBuilder(
-            IServiceCollection services,
-            IConfiguration configuration 
-        ) {
-            _services = services;
-            _configuration = configuration; 
-        }
 
         public BearerConfigurationBuilder SetSecretKey(string secretKey)
         {
@@ -36,9 +25,9 @@ namespace coer91
             return this;
         }
 
-        public BearerConfigurationBuilder AddAuthorizationPolicy(bool addAuthorizationPolicy)
+        public BearerConfigurationBuilder SetAutorizationToControllers(bool setAutorizationToControllers)
         {
-            _addAuthorizationPolicy = addAuthorizationPolicy;
+            _setAutorizationToControllers = setAutorizationToControllers;
             return this;
         }
 
@@ -71,13 +60,13 @@ namespace coer91
         { 
             //SecretKey
             if(string.IsNullOrWhiteSpace(_secretKey)) 
-                _secretKey = _configuration.GetSection("Security:SecretKey").Get<string>() ?? string.Empty;
+                _secretKey = _builder.Configuration.GetSection("Security:SecretKey").Get<string>() ?? string.Empty;
 
             if (string.IsNullOrWhiteSpace(_secretKey)) return; 
                         
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
-            _services
+            _builder.Services
                 .AddAuthentication(options =>
                 {
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -91,12 +80,9 @@ namespace coer91
                     ValidateIssuerSigningKey = _validateIssuerSigningKey,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey)),
                     ClockSkew = TimeSpan.Zero
-                });
+                }); 
 
-            //AddAuthorizationPolicy
-            _addAuthorizationPolicy ??= _configuration.GetSection("Security:AddAuthorizationPolicy").Get<bool?>() ?? true;
-
-            if (_addAuthorizationPolicy is true) _services.AddControllers(config =>
+            if (_setAutorizationToControllers) _builder.Services.AddControllers(config =>
             {
                 AuthorizationPolicy policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 AuthorizeFilter filter = new(policy);

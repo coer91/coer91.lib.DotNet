@@ -1,23 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.0.1</Version>
-    <Title>coer91</Title>
-    <PackageId>coer91</PackageId>
-    <Authors>Christian Omar Escamilla Rodríguez</Authors>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <TargetFramework>net10.0</TargetFramework> 
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <RootNamespace>coer91</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageId>coer91.NET</PackageId>
+    <Title>coer91.NET</Title>
+    <Version>1.0.0</Version>
+    <Authors>Christian Omar Escamilla Rodríguez</Authors>
+    <Description>Plugin for dotnet 10</Description>
+    <PackageIcon>coer91.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/coer91/coer91.DotNet</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Description>Plugin for dotnet 10</Description>
-    <PackageIcon>coer91.png</PackageIcon>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="10.0.3" />
@@ -29,16 +27,16 @@
     <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.4" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.16.0" /> 
-  </ItemGroup>
+  </ItemGroup>      
 
   <ItemGroup>
     <None Update="coer91.png">
-      <Pack>True</Pack>
       <PackagePath>\</PackagePath>
+      <Pack>True</Pack>
     </None>
     <None Update="README.md">
-      <Pack>True</Pack>
       <PackagePath>\</PackagePath>
+      <Pack>True</Pack>
     </None>
   </ItemGroup>
 

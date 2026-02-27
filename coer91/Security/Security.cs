@@ -1,34 +1,21 @@
-﻿using System.Text; 
-using System.Reflection;  
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.AspNetCore.Hosting; 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Hosting; 
-using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi;
+using System.Reflection;  
+using System.Text; 
 
 namespace coer91
 {
-    public class Security
+    public class Security(WebApplicationBuilder _builder)
     {
         public static string ProjectName { get; private set; } = Assembly.GetEntryAssembly()?.GetName()?.Name;
 
-        private readonly IServiceCollection _services;
-        private readonly IConfiguration _configuration;
-        private readonly IWebHostEnvironment _envirotment;
 
-        public Security(
-            IServiceCollection services,
-            IConfiguration configuration,
-            IWebHostEnvironment envirotment
-        ) {
-            _services = services;
-            _configuration = configuration;
-            _envirotment = envirotment;
-        }
-
-
-        public void AddSwaggerConfiguration(string title = "", string version = "")
+        public void AddSwagger(string title = "", string version = "")
         {
             if (string.IsNullOrWhiteSpace(title))
                 title = ProjectName;
@@ -37,15 +24,15 @@ namespace coer91
                 ProjectName = title;
 
             if (string.IsNullOrWhiteSpace(version))
-                version = _configuration.GetSection("Version").Get<string>() ?? string.Empty; 
+                version = _builder.Configuration.GetSection("Version").Get<string>() ?? string.Empty; 
 
-            if (_envirotment.IsDevelopment())
+            if (_builder.Environment.IsDevelopment())
                 title += " - Development";
 
-            else if (_envirotment.IsStaging())
+            else if (_builder.Environment.IsStaging())
                 title += " - Staging";
 
-            _services.AddSwaggerGen(config =>
+            _builder.Services.AddSwaggerGen(config =>
             {
                 config.SwaggerDoc("v1", new OpenApiInfo { Title = title, Version = version });
                 config.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
@@ -68,12 +55,12 @@ namespace coer91
         }
 
 
-        public BearerConfigurationBuilder Bearer() => new(_services, _configuration);  
+        public BearerConfigurationBuilder Bearer() => new(_builder);  
 
 
         public void AddCorsConfiguration(string policy = "coer91Policy", CorsPolicyBuilder policyBuilder = null)
         {
-            _services.AddCors(options =>
+            _builder.Services.AddCors(options =>
             {
                 var builder = policyBuilder ?? new CorsPolicyBuilder()
                    .SetIsOriginAllowed(origin => true)
