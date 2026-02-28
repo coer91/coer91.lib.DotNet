@@ -5,7 +5,7 @@ namespace coer91.NET
 {
     public static class UseSwaggerMiddleware
     { 
-        public static IApplicationBuilder UseSwagger(this IApplicationBuilder app, bool showInProduction = false)
+        public static IApplicationBuilder UseSwagger(this WebApplication app, bool showInProduction)
         {              
             if (Security.IsProduction && !showInProduction)
                 return app; 

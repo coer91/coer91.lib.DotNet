@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <Version>1.0.1</Version>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>coer91.NET</PackageId>
     <Title>coer91.NET</Title>
-    <Version>1.0.0</Version>
     <Authors>Christian Omar Escamilla Rodríguez</Authors>
     <Description>Plugin for dotnet 10</Description>
     <PackageIcon>coer91.png</PackageIcon>

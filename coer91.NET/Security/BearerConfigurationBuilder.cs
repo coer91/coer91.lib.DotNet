@@ -18,7 +18,7 @@ namespace coer91.NET
         protected bool _validateIssuerSigningKey = true;
         protected TimeSpan _clockSkew = TimeSpan.Zero;
 
-        public BearerConfigurationBuilder SetToControllers(bool setToControllers)
+        public BearerConfigurationBuilder SetToControllers(bool setToControllers = true)
         {
             _setToControllers = setToControllers;
             return this;
@@ -54,7 +54,7 @@ namespace coer91.NET
             return this;
         }
 
-        public void Set()
+        public void Build()
         {  
             if(string.IsNullOrWhiteSpace(_secretKey)) 
                 _secretKey = _builder.Configuration.GetSection("Security:SecretKey").Get<string>() ?? string.Empty;

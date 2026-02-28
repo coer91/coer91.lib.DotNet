@@ -48,7 +48,7 @@ namespace coer91.NET
         }
          
 
-        public void Set() 
+        public void Build() 
         { 
             _builder.Services.AddCors(options =>
             {

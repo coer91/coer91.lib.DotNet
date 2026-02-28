@@ -83,7 +83,7 @@ namespace coer91.NET
             return this;
         } 
 
-        public void Set() 
+        public void Build() 
         {
             if (_builder.Environment.IsDevelopment())
                 _title += " - Development";
