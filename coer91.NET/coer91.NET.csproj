@@ -14,6 +14,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/coer91/coer91.DotNet</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
   
   <ItemGroup>
@@ -33,6 +34,10 @@
     <None Update="coer91.png">
       <PackagePath>\</PackagePath>
       <Pack>True</Pack>
+    </None>
+    <None Update="LICENSE.txt">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
     </None>
     <None Update="README.md">
       <PackagePath>\</PackagePath>
