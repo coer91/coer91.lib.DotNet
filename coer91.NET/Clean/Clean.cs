@@ -6,6 +6,12 @@ namespace coer91.NET
     public static class Clean
     {
         #region NoNesting
+        /// <summary>
+        /// Set navigation properties to null.
+        /// </summary>
+        public static List<T> NoNesting<T>(ICollection<T> value, string[] except = null)
+            => Validations.IsNavigationProperty(typeof(T).GetType()) ? [.. value.Select(x => NoNesting(x, except))] : [.. value];
+
 
         /// <summary>
         /// Set navigation properties to null.
@@ -17,7 +23,14 @@ namespace coer91.NET
         /// <summary>
         /// Set navigation properties to null.
         /// </summary>
-        public static List<T> NoNesting<T>(ICollection<T> value, string[] except = null)
+        public static List<T> NoNesting<T>(T[] value, string[] except = null)
+            => Validations.IsNavigationProperty(typeof(T).GetType()) ? [.. value.Select(x => NoNesting(x, except))] : [.. value];
+
+
+        /// <summary>
+        /// Set navigation properties to null.
+        /// </summary>
+        public static List<T> NoNesting<T>(List<T> value, string[] except = null)
             => Validations.IsNavigationProperty(typeof(T).GetType()) ? [.. value.Select(x => NoNesting(x, except))] : [.. value]; 
 
 
@@ -72,13 +85,28 @@ namespace coer91.NET
         /// <summary>
         /// Sets null to string types if it is empty or only contains whitespace.
         /// </summary>
-        public static List<T> NoStringEmpty<T>(IEnumerable<T> value, string[] except = null)
+        public static List<T> NoStringEmpty<T>(ICollection<T> value, string[] except = null)
             => [.. value.Select(x => NoStringEmpty(x, except))];
+
 
         /// <summary>
         /// Sets null to string types if it is empty or only contains whitespace.
         /// </summary>
-        public static List<T> NoStringEmpty<T>(ICollection<T> value, string[] except = null)
+        public static List<T> NoStringEmpty<T>(IEnumerable<T> value, string[] except = null)
+            => [.. value.Select(x => NoStringEmpty(x, except))];
+
+
+        /// <summary>
+        /// Sets null to string types if it is empty or only contains whitespace.
+        /// </summary>
+        public static List<T> NoStringEmpty<T>(T[] value, string[] except = null)
+            => [.. value.Select(x => NoStringEmpty(x, except))];
+
+
+        /// <summary>
+        /// Sets null to string types if it is empty or only contains whitespace.
+        /// </summary>
+        public static List<T> NoStringEmpty<T>(List<T> value, string[] except = null)
             => [.. value.Select(x => NoStringEmpty(x, except))]; 
 
 

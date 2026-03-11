@@ -17,9 +17,9 @@ builder.Services.AddHttpContextAccessor();
 
 //Security 
 Security security = new(builder);
-security.AddSwagger("My System").Set();
-security.AddAuthenticationBearer().Set();
-security.AddCors().Set();
+//security.AddSwagger("My System").Set();
+//security.AddAuthenticationBearer().Set();
+//security.AddCors().Set();
 
 //Web Application
 WebApplication app = builder.Build();

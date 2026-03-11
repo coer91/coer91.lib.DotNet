@@ -1,92 +1,99 @@
 ﻿namespace coer91.NET
 {
-    public sealed class ScaffoldDDD : ScaffoldBuilder
-    { 
-        public ScaffoldDDD SetProject(string name)
+    public sealed class Scaffold : ScaffoldBuilder
+    {
+        public Scaffold SetProject(string name)
         {
             _project = name.ToPascalCase();
             return this;
         }
 
 
-        public ScaffoldDDD SetContextPath(string path)
+        public Scaffold SetContextPath(string path)
         {
-            _contextPath = path;
+            _contextPath = $"../{path}";
             return this;
         }
 
 
-        public ScaffoldDDD SetDBContextName(string name)
+        public Scaffold SetDBContextName(string name)
         {
             _contextName = name;
             return this;
         }
 
 
-        public ScaffoldDDD SetRepositoryInterfaceOutput(string path)
+        public Scaffold SetRepositoryInterfaceOutput(string path)
         {
-            _repositoryInterfaceOutput = path;
+            _repositoryInterfaceOutput = $"../{path}";
             return this;
         }
 
 
-        public ScaffoldDDD SetRepositoryOutput(string path)
+        public Scaffold SetRepositoryOutput(string path)
         {
-            _repositoryOutput = path;
+            _repositoryOutput = $"../{path}";
             return this;
         }
 
 
-        public ScaffoldDDD SetDtoOutput(string path)
+        public Scaffold SetDtoOutput(string path)
         {
-            _dtoOutput = path;
+            _dtoOutput = $"../{path}";
             return this;
         }
 
 
-        public ScaffoldDDD SetMapperOutput(string path)
+        public Scaffold SetMapperOutput(string path)
         {
-            _mapperOutput = path;
+            _mapperOutput = $"../{path}";
             return this;
         }
 
 
-        public ScaffoldDDD SetServiceInterfaceOutput(string path)
+        public Scaffold SetServiceInterfaceOutput(string path)
         {
-            _serviceInterfaceOutput = path;
+            _serviceInterfaceOutput = $"../{path}";
             return this;
         }
 
 
-        public ScaffoldDDD SetServiceOutput(string path)
+        public Scaffold SetServiceOutput(string path)
         {
-            _serviceOutput = path;
+            _serviceOutput = $"../{path}";
             return this;
         }
 
 
-        public ScaffoldDDD SetControllerOutput(string path)
+        public Scaffold SetControllerOutput(string path)
         {
-            _controllerOutput = path;
+            _controllerOutput = $"../{path}";
             return this;
         }
 
 
-        public ScaffoldDDD SetTestOutput(string path)
+        public Scaffold SetTestOutput(string path)
         {
-            _testOutput = path;
+            _testOutput = $"../{path}";
             return this;
         }
 
 
-        public ScaffoldDDD SetServiceCollectionPath(string path)
+        public Scaffold SetServiceCollectionPath(string path)
         {
-            _serviceCollectionPath = path;
+            _serviceCollectionPath = $"../{path}";
             return this;
-        } 
+        }
 
 
-        public void Build() 
+        public Scaffold SetXunitSetupPath(string path)
+        {
+            _xunitSetupPath = $"../{path}";
+            return this;
+        }
+
+
+        public void Build()
         {
             string message = StartScaffold();
 
@@ -104,17 +111,19 @@
                     CreateService();
                     CreateController();
                     CreateTests();
-                    SetServiceCollection(); 
+                    SetServiceCollection();
 
                 } while (Confirm("Continue with more models"));
 
             else
                 Console.WriteLine(message);
+
+            Environment.Exit(0);
         }
 
 
-        private string StartScaffold() 
-        { 
+        private string StartScaffold()
+        {
             string message = string.Empty;
 
             if (string.IsNullOrWhiteSpace(_project))
@@ -126,7 +135,7 @@
             if (string.IsNullOrWhiteSpace(_contextName))
                 _contextName = $"{_project}Context";
 
-            return message;        
+            return message;
         }
     }
 }
