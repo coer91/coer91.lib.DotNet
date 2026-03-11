@@ -496,7 +496,7 @@
                     streamWriter.WriteLine("\t\t\t\t\treturn response.BadRequest();");
                     streamWriter.WriteLine();
                     streamWriter.WriteLine("\t\t\t\t//Exists?");
-                    streamWriter.WriteLine($"\t\t\t\tif (await _repository.Exists{_class}(x => x.Name.Equals({dto}.Name, StringComparison.OrdinalIgnoreCase)))");
+                    streamWriter.WriteLine($"\t\t\t\tif (await _repository.Exists{_class}(x => x.Name.ToUpper().Equals({dto}.Name.ToUpper())))");
                     streamWriter.WriteLine($"\t\t\t\t\treturn response.Conflict($\"<b>{{{dto}.Name}}</b> already exists\");");
                     streamWriter.WriteLine();
                     streamWriter.WriteLine("\t\t\t\t//Mapping");
@@ -535,7 +535,7 @@
                     streamWriter.WriteLine("\t\t\t\t\treturn response.BadRequest();");
                     streamWriter.WriteLine();
                     streamWriter.WriteLine("\t\t\t\t//Exists?");
-                    streamWriter.WriteLine($"\t\t\t\tif (await _repository.Exists{_class}(x => x.Id != {dto}.Id && x.Name.Equals({dto}.Name, StringComparison.OrdinalIgnoreCase)))");
+                    streamWriter.WriteLine($"\t\t\t\tif (await _repository.Exists{_class}(x => x.Id != {dto}.Id && x.Name.ToUpper().Equals({dto}.Name.ToUpper())))");
                     streamWriter.WriteLine($"\t\t\t\t\treturn response.Conflict($\"<b>{{{dto}.Name}}</b> already exists\"); ");
                     streamWriter.WriteLine();
                     streamWriter.WriteLine("\t\t\t\t//Get");
@@ -588,7 +588,7 @@
                     streamWriter.WriteLine("\t\t\t\t\treturn response.BadRequest();");
                     streamWriter.WriteLine();
                     streamWriter.WriteLine("\t\t\t\t//Exists?");
-                    streamWriter.WriteLine($"\t\t\t\tif (await _repository.Exists{_class}(x => x.Id != entity.Id && x.Name.Equals(entity.Name, StringComparison.OrdinalIgnoreCase)))");
+                    streamWriter.WriteLine($"\t\t\t\tif (await _repository.Exists{_class}(x => x.Id != entity.Id && x.Name.ToUpper().Equals(entity.Name.ToUpper())))");
                     streamWriter.WriteLine("\t\t\t\t\treturn response.Conflict($\"<b>{entity.Name}</b> already exists\"); ");
                     streamWriter.WriteLine();
                     streamWriter.WriteLine("\t\t\t\t//Update");
