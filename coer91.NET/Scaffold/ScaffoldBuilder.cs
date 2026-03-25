@@ -394,13 +394,13 @@
         protected void CreateService()
         {
             if (Directory.Exists(_serviceOutput))
-            {
-
+            { 
                 string path = BeginBuild(BUILD.Service, _serviceOutput, $"{_class}Service.cs");
 
                 if (path is not null)
                 {
                     string dto = _dto.FirstCharToLower();
+                    bool useBasicLogic = Confirm("Implement basic logic?");
 
                     using StreamWriter streamWriter = File.CreateText(path);
                     streamWriter.WriteLine($"using Microsoft.AspNetCore.JsonPatch;");
@@ -439,13 +439,16 @@
                     streamWriter.WriteLine();
                     streamWriter.WriteLine("\t\t\ttry");
                     streamWriter.WriteLine("\t\t\t{");
-                    streamWriter.WriteLine($"\t\t\t\t{_dbSet} entity = await _repository.Get{_class}By(x => x.Id == {_variable}Id);");
-                    streamWriter.WriteLine();
-                    streamWriter.WriteLine("\t\t\t\tif (entity is null)");
-                    streamWriter.WriteLine("\t\t\t\t\treturn response.NotFound();");
-                    streamWriter.WriteLine();
-                    streamWriter.WriteLine("\t\t\t\t//Response");
-                    streamWriter.WriteLine($"\t\t\t\tresponse.Data = _mapper.Map<{_dto}>(entity);");
+                    if (useBasicLogic) 
+                    { 
+                        streamWriter.WriteLine($"\t\t\t\t{_dbSet} entity = await _repository.Get{_class}By(x => x.Id == {_variable}Id);");
+                        streamWriter.WriteLine();
+                        streamWriter.WriteLine("\t\t\t\tif (entity is null)");
+                        streamWriter.WriteLine("\t\t\t\t\treturn response.NotFound();");
+                        streamWriter.WriteLine();
+                        streamWriter.WriteLine("\t\t\t\t//Response");
+                        streamWriter.WriteLine($"\t\t\t\tresponse.Data = _mapper.Map<{_dto}>(entity);"); 
+                    }
                     streamWriter.WriteLine("\t\t\t}");
                     streamWriter.WriteLine();
                     streamWriter.WriteLine("\t\t\tcatch (Exception ex)");
@@ -465,11 +468,14 @@
                     streamWriter.WriteLine();
                     streamWriter.WriteLine("\t\t\ttry");
                     streamWriter.WriteLine("\t\t\t{");
-                    streamWriter.WriteLine($"\t\t\t\tList<{_dbSet}> entities = await _repository.Get{_class}List(x => true);");
-                    streamWriter.WriteLine($"\t\t\t\tList<{_dto}> dtoList = _mapper.Map<List<{_dto}>>(entities);");
-                    streamWriter.WriteLine();
-                    streamWriter.WriteLine("\t\t\t\t//Response");
-                    streamWriter.WriteLine("\t\t\t\tresponse.Data = [.. dtoList.OrderBy(x => x.Name)];");
+                    if (useBasicLogic)
+                    { 
+                        streamWriter.WriteLine($"\t\t\t\tList<{_dbSet}> entities = await _repository.Get{_class}List(x => true);");
+                        streamWriter.WriteLine($"\t\t\t\tList<{_dto}> dtoList = _mapper.Map<List<{_dto}>>(entities);");
+                        streamWriter.WriteLine();
+                        streamWriter.WriteLine("\t\t\t\t//Response");
+                        streamWriter.WriteLine("\t\t\t\tresponse.Data = [.. dtoList.OrderBy(x => x.Name)];"); 
+                    }
                     streamWriter.WriteLine("\t\t\t}");
                     streamWriter.WriteLine();
                     streamWriter.WriteLine("\t\t\tcatch (Exception ex)");
@@ -489,26 +495,29 @@
                     streamWriter.WriteLine();
                     streamWriter.WriteLine("\t\t\ttry");
                     streamWriter.WriteLine("\t\t\t{");
-                    streamWriter.WriteLine("\t\t\t\t//Clean Data");
-                    streamWriter.WriteLine($"\t\t\t\t{dto}.Name = {dto}.Name.CleanUpBlanks().FirstCharToUpper();");
-                    streamWriter.WriteLine();
-                    streamWriter.WriteLine($"\t\t\t\tif (string.IsNullOrWhiteSpace({dto}.Name))");
-                    streamWriter.WriteLine("\t\t\t\t\treturn response.BadRequest();");
-                    streamWriter.WriteLine();
-                    streamWriter.WriteLine("\t\t\t\t//Exists?");
-                    streamWriter.WriteLine($"\t\t\t\tif (await _repository.Exists{_class}(x => x.Name.ToUpper().Equals({dto}.Name.ToUpper())))");
-                    streamWriter.WriteLine($"\t\t\t\t\treturn response.Conflict($\"<b>{{{dto}.Name}}</b> already exists\");");
-                    streamWriter.WriteLine();
-                    streamWriter.WriteLine("\t\t\t\t//Mapping");
-                    streamWriter.WriteLine($"\t\t\t\t{_dbSet} entity = _mapper.Map<{_dbSet}>({dto});");
-                    streamWriter.WriteLine("\t\t\t\tentity.Id = 0;");
-                    streamWriter.WriteLine();
-                    streamWriter.WriteLine("\t\t\t\t//Create");
-                    streamWriter.WriteLine("\t\t\t\tentity = Clean.NoNesting(entity);");
-                    streamWriter.WriteLine($"\t\t\t\tentity = await _repository.Create{_class}(entity);");
-                    streamWriter.WriteLine();
-                    streamWriter.WriteLine("\t\t\t\t//Response");
-                    streamWriter.WriteLine($"\t\t\t\tresponse.Data = _mapper.Map<{_dto}>(entity);");
+                    if (useBasicLogic) 
+                    { 
+                        streamWriter.WriteLine("\t\t\t\t//Clean Data");
+                        streamWriter.WriteLine($"\t\t\t\t{dto}.Name = {dto}.Name.CleanUpBlanks().FirstCharToUpper();");
+                        streamWriter.WriteLine();
+                        streamWriter.WriteLine($"\t\t\t\tif (string.IsNullOrWhiteSpace({dto}.Name))");
+                        streamWriter.WriteLine("\t\t\t\t\treturn response.BadRequest();");
+                        streamWriter.WriteLine();
+                        streamWriter.WriteLine("\t\t\t\t//Exists?");
+                        streamWriter.WriteLine($"\t\t\t\tif (await _repository.Exists{_class}(x => x.Name.ToUpper().Equals({dto}.Name.ToUpper())))");
+                        streamWriter.WriteLine($"\t\t\t\t\treturn response.Conflict($\"<b>{{{dto}.Name}}</b> already exists\");");
+                        streamWriter.WriteLine();
+                        streamWriter.WriteLine("\t\t\t\t//Mapping");
+                        streamWriter.WriteLine($"\t\t\t\t{_dbSet} entity = _mapper.Map<{_dbSet}>({dto});");
+                        streamWriter.WriteLine("\t\t\t\tentity.Id = 0;");
+                        streamWriter.WriteLine();
+                        streamWriter.WriteLine("\t\t\t\t//Create");
+                        streamWriter.WriteLine("\t\t\t\tentity = Clean.NoNesting(entity);");
+                        streamWriter.WriteLine($"\t\t\t\tentity = await _repository.Create{_class}(entity);");
+                        streamWriter.WriteLine();
+                        streamWriter.WriteLine("\t\t\t\t//Response");
+                        streamWriter.WriteLine($"\t\t\t\tresponse.Data = _mapper.Map<{_dto}>(entity);");
+                    }
                     streamWriter.WriteLine("\t\t\t}");
                     streamWriter.WriteLine();
                     streamWriter.WriteLine("\t\t\tcatch (Exception ex)");
@@ -528,31 +537,34 @@
                     streamWriter.WriteLine();
                     streamWriter.WriteLine("\t\t\ttry");
                     streamWriter.WriteLine("\t\t\t{");
-                    streamWriter.WriteLine("\t\t\t\t//Clean Data");
-                    streamWriter.WriteLine($"\t\t\t\t{dto}.Name = {dto}.Name.CleanUpBlanks().FirstCharToUpper();");
-                    streamWriter.WriteLine();
-                    streamWriter.WriteLine($"\t\t\t\tif (string.IsNullOrWhiteSpace({dto}.Name))");
-                    streamWriter.WriteLine("\t\t\t\t\treturn response.BadRequest();");
-                    streamWriter.WriteLine();
-                    streamWriter.WriteLine("\t\t\t\t//Exists?");
-                    streamWriter.WriteLine($"\t\t\t\tif (await _repository.Exists{_class}(x => x.Id != {dto}.Id && x.Name.ToUpper().Equals({dto}.Name.ToUpper())))");
-                    streamWriter.WriteLine($"\t\t\t\t\treturn response.Conflict($\"<b>{{{dto}.Name}}</b> already exists\"); ");
-                    streamWriter.WriteLine();
-                    streamWriter.WriteLine("\t\t\t\t//Get");
-                    streamWriter.WriteLine($"\t\t\t\t{_dbSet} entity = await _repository.Get{_class}By(x => x.Id == {dto}.Id);");
-                    streamWriter.WriteLine();
-                    streamWriter.WriteLine("\t\t\t\tif (entity is null)");
-                    streamWriter.WriteLine("\t\t\t\t\treturn response.NotFound();");
-                    streamWriter.WriteLine();
-                    streamWriter.WriteLine("\t\t\t\t//Mapping");
-                    streamWriter.WriteLine($"\t\t\t\tentity = _mapper.Map<{_dbSet}>({dto});");
-                    streamWriter.WriteLine();
-                    streamWriter.WriteLine("\t\t\t\t//Update");
-                    streamWriter.WriteLine("\t\t\t\tentity = Clean.NoNesting(entity);");
-                    streamWriter.WriteLine($"\t\t\t\tentity = await _repository.Update{_class}(entity);");
-                    streamWriter.WriteLine();
-                    streamWriter.WriteLine("\t\t\t\t//Response");
-                    streamWriter.WriteLine($"\t\t\t\tresponse.Data = _mapper.Map<{_dto}>(entity);");
+                    if (useBasicLogic) 
+                    { 
+                        streamWriter.WriteLine("\t\t\t\t//Clean Data");
+                        streamWriter.WriteLine($"\t\t\t\t{dto}.Name = {dto}.Name.CleanUpBlanks().FirstCharToUpper();");
+                        streamWriter.WriteLine();
+                        streamWriter.WriteLine($"\t\t\t\tif (string.IsNullOrWhiteSpace({dto}.Name))");
+                        streamWriter.WriteLine("\t\t\t\t\treturn response.BadRequest();");
+                        streamWriter.WriteLine();
+                        streamWriter.WriteLine("\t\t\t\t//Exists?");
+                        streamWriter.WriteLine($"\t\t\t\tif (await _repository.Exists{_class}(x => x.Id != {dto}.Id && x.Name.ToUpper().Equals({dto}.Name.ToUpper())))");
+                        streamWriter.WriteLine($"\t\t\t\t\treturn response.Conflict($\"<b>{{{dto}.Name}}</b> already exists\"); ");
+                        streamWriter.WriteLine();
+                        streamWriter.WriteLine("\t\t\t\t//Get");
+                        streamWriter.WriteLine($"\t\t\t\t{_dbSet} entity = await _repository.Get{_class}By(x => x.Id == {dto}.Id);");
+                        streamWriter.WriteLine();
+                        streamWriter.WriteLine("\t\t\t\tif (entity is null)");
+                        streamWriter.WriteLine("\t\t\t\t\treturn response.NotFound();");
+                        streamWriter.WriteLine();
+                        streamWriter.WriteLine("\t\t\t\t//Mapping");
+                        streamWriter.WriteLine($"\t\t\t\tentity = _mapper.Map<{_dbSet}>({dto});");
+                        streamWriter.WriteLine();
+                        streamWriter.WriteLine("\t\t\t\t//Update");
+                        streamWriter.WriteLine("\t\t\t\tentity = Clean.NoNesting(entity);");
+                        streamWriter.WriteLine($"\t\t\t\tentity = await _repository.Update{_class}(entity);");
+                        streamWriter.WriteLine();
+                        streamWriter.WriteLine("\t\t\t\t//Response");
+                        streamWriter.WriteLine($"\t\t\t\tresponse.Data = _mapper.Map<{_dto}>(entity);"); 
+                    }
                     streamWriter.WriteLine("\t\t\t}");
                     streamWriter.WriteLine();
                     streamWriter.WriteLine("\t\t\tcatch (Exception ex)");
@@ -572,31 +584,34 @@
                     streamWriter.WriteLine();
                     streamWriter.WriteLine("\t\t\ttry");
                     streamWriter.WriteLine("\t\t\t{");
-                    streamWriter.WriteLine("\t\t\t\t//Get");
-                    streamWriter.WriteLine($"\t\t\t\t{_dbSet} entity = await _repository.Get{_class}By(x => x.Id == {_variable}Id);");
-                    streamWriter.WriteLine();
-                    streamWriter.WriteLine("\t\t\t\tif (entity is null)");
-                    streamWriter.WriteLine("\t\t\t\t\treturn response.NotFound();");
-                    streamWriter.WriteLine();
-                    streamWriter.WriteLine("\t\t\t\t//Mapping");
-                    streamWriter.WriteLine("\t\t\t\tpatch.ApplyTo(entity);");
-                    streamWriter.WriteLine();
-                    streamWriter.WriteLine("\t\t\t\t//Clean Data");
-                    streamWriter.WriteLine("\t\t\t\tentity.Name = entity.Name.CleanUpBlanks().FirstCharToUpper();");
-                    streamWriter.WriteLine();
-                    streamWriter.WriteLine("\t\t\t\tif (string.IsNullOrWhiteSpace(entity.Name))");
-                    streamWriter.WriteLine("\t\t\t\t\treturn response.BadRequest();");
-                    streamWriter.WriteLine();
-                    streamWriter.WriteLine("\t\t\t\t//Exists?");
-                    streamWriter.WriteLine($"\t\t\t\tif (await _repository.Exists{_class}(x => x.Id != entity.Id && x.Name.ToUpper().Equals(entity.Name.ToUpper())))");
-                    streamWriter.WriteLine("\t\t\t\t\treturn response.Conflict($\"<b>{entity.Name}</b> already exists\"); ");
-                    streamWriter.WriteLine();
-                    streamWriter.WriteLine("\t\t\t\t//Update");
-                    streamWriter.WriteLine("\t\t\t\tentity = Clean.NoNesting(entity);");
-                    streamWriter.WriteLine($"\t\t\t\tentity = await _repository.Update{_class}(entity);");
-                    streamWriter.WriteLine();
-                    streamWriter.WriteLine($"\t\t\t\t//Response");
-                    streamWriter.WriteLine($"\t\t\t\tresponse.Data = _mapper.Map<{_dto}>(entity);");
+                    if (useBasicLogic) 
+                    { 
+                        streamWriter.WriteLine("\t\t\t\t//Get");
+                        streamWriter.WriteLine($"\t\t\t\t{_dbSet} entity = await _repository.Get{_class}By(x => x.Id == {_variable}Id);");
+                        streamWriter.WriteLine();
+                        streamWriter.WriteLine("\t\t\t\tif (entity is null)");
+                        streamWriter.WriteLine("\t\t\t\t\treturn response.NotFound();");
+                        streamWriter.WriteLine();
+                        streamWriter.WriteLine("\t\t\t\t//Mapping");
+                        streamWriter.WriteLine("\t\t\t\tpatch.ApplyTo(entity);");
+                        streamWriter.WriteLine();
+                        streamWriter.WriteLine("\t\t\t\t//Clean Data");
+                        streamWriter.WriteLine("\t\t\t\tentity.Name = entity.Name.CleanUpBlanks().FirstCharToUpper();");
+                        streamWriter.WriteLine();
+                        streamWriter.WriteLine("\t\t\t\tif (string.IsNullOrWhiteSpace(entity.Name))");
+                        streamWriter.WriteLine("\t\t\t\t\treturn response.BadRequest();");
+                        streamWriter.WriteLine();
+                        streamWriter.WriteLine("\t\t\t\t//Exists?");
+                        streamWriter.WriteLine($"\t\t\t\tif (await _repository.Exists{_class}(x => x.Id != entity.Id && x.Name.ToUpper().Equals(entity.Name.ToUpper())))");
+                        streamWriter.WriteLine("\t\t\t\t\treturn response.Conflict($\"<b>{entity.Name}</b> already exists\"); ");
+                        streamWriter.WriteLine();
+                        streamWriter.WriteLine("\t\t\t\t//Update");
+                        streamWriter.WriteLine("\t\t\t\tentity = Clean.NoNesting(entity);");
+                        streamWriter.WriteLine($"\t\t\t\tentity = await _repository.Update{_class}(entity);");
+                        streamWriter.WriteLine();
+                        streamWriter.WriteLine($"\t\t\t\t//Response");
+                        streamWriter.WriteLine($"\t\t\t\tresponse.Data = _mapper.Map<{_dto}>(entity);"); 
+                    }
                     streamWriter.WriteLine("\t\t\t}");
                     streamWriter.WriteLine();
                     streamWriter.WriteLine("\t\t\tcatch (Exception ex)");
@@ -616,15 +631,18 @@
                     streamWriter.WriteLine();
                     streamWriter.WriteLine("\t\t\ttry");
                     streamWriter.WriteLine("\t\t\t{");
-                    streamWriter.WriteLine("\t\t\t\t//Get");
-                    streamWriter.WriteLine($"\t\t\t\t{_dbSet} entity = await _repository.Get{_class}By(x => x.Id == {_variable}Id);");
-                    streamWriter.WriteLine();
-                    streamWriter.WriteLine("\t\t\t\tif (entity is null)");
-                    streamWriter.WriteLine("\t\t\t\t\treturn response.NotFound();");
-                    streamWriter.WriteLine();
-                    streamWriter.WriteLine("\t\t\t\t//Delete");
-                    streamWriter.WriteLine("\t\t\t\tentity = Clean.NoNesting(entity);");
-                    streamWriter.WriteLine($"\t\t\t\tawait _repository.Delete{_class}(entity);");
+                    if (useBasicLogic)
+                    {
+                        streamWriter.WriteLine("\t\t\t\t//Get");
+                        streamWriter.WriteLine($"\t\t\t\t{_dbSet} entity = await _repository.Get{_class}By(x => x.Id == {_variable}Id);");
+                        streamWriter.WriteLine();
+                        streamWriter.WriteLine("\t\t\t\tif (entity is null)");
+                        streamWriter.WriteLine("\t\t\t\t\treturn response.NotFound();");
+                        streamWriter.WriteLine();
+                        streamWriter.WriteLine("\t\t\t\t//Delete");
+                        streamWriter.WriteLine("\t\t\t\tentity = Clean.NoNesting(entity);");
+                        streamWriter.WriteLine($"\t\t\t\tawait _repository.Delete{_class}(entity);");
+                    }
                     streamWriter.WriteLine("\t\t\t}");
                     streamWriter.WriteLine();
                     streamWriter.WriteLine("\t\t\tcatch (Exception ex)");
