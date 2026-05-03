@@ -1,10 +1,12 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
-using System.Reflection;
-using System.Text;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using System.Reflection;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace coer91.NET
 {
@@ -58,10 +60,10 @@ namespace coer91.NET
         public static IEnumerable<Claim> GetClaims(HttpContext context) => context is not null ? (context.User?.Claims ?? []) : [];
 
 
-        public static string GetClaimValue(string type, IHttpContextAccessor httpContextAccessor) => GetClaimValue(type, httpContextAccessor?.HttpContext);
+        public static string GetClaimValue(string type, IHttpContextAccessor httpContextAccessor, string defaultValue = "") => GetClaimValue(type, httpContextAccessor?.HttpContext, defaultValue);
 
 
-        public static string GetClaimValue(string type, HttpContext context) => GetClaims(context).FirstOrDefault(_claim => _claim.Type == type)?.Value ?? string.Empty;
+        public static string GetClaimValue(string type, HttpContext context, string defaultValue = "") => GetClaims(context).FirstOrDefault(_claim => _claim.Type == type)?.Value ?? defaultValue;
 
 
         public static string GeneratePassword()
@@ -116,6 +118,33 @@ namespace coer91.NET
 
             return new string(caracters);
         }
+
+
+        public static byte[] GenerateSalt(int bytes = 16)
+        {
+            byte[] salt = new byte[bytes];
+            using RandomNumberGenerator randomNumber = RandomNumberGenerator.Create();
+            randomNumber.GetBytes(salt);
+            randomNumber.Dispose();
+            return salt;
+        }
+
+
+        public static string GenerateHash(string data, byte[] salt, int bytes = 32)
+        {
+            byte[] dataBytes = KeyDerivation.Pbkdf2(
+                password: data,
+                salt: salt,
+                prf: KeyDerivationPrf.HMACSHA512,
+                iterationCount: 10000,
+                numBytesRequested: bytes
+            );
+
+            return Convert.ToBase64String(dataBytes);
+        }
+
+
+        public static bool EqualsHash(string data, byte[] salt, string hash) => GenerateHash(data, salt).Equals(hash);
         #endregion
     }
 } 
