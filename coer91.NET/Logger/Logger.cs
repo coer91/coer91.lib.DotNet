@@ -6,15 +6,48 @@ namespace coer91.NET
 {
     public static class Logger
     {
-        public static bool UseLogger { get; private set; } = false;
+        public static bool UseLogger { get; private set; } = false; 
 
         public static IHostBuilder AddLogger(this IHostBuilder host, IConfiguration configuration)
-            => AddLogger(host, !string.IsNullOrWhiteSpace(configuration["UseLogger"]) && configuration["UseLogger"].Equals("true", StringComparison.CurrentCulture));
+        {
+            bool useLogger = !string.IsNullOrWhiteSpace(configuration["Logger:Enable"]) && configuration["Logger:Enable"].Equals("true", StringComparison.CurrentCulture);
+           
+            if (useLogger)
+            {
+                string path = configuration.GetSection("Logger:Path").Get<string>() ?? "../Logger/.log";
+                string template = configuration.GetSection("Logger:Template").Get<string>() ?? "[{Level}][{Timestamp:yyyy-MM-dd HH:mm:ss zzz}]{NewLine}{Message}{NewLine}{NewLine}";
+                int? retainedFiles = configuration.GetSection("Logger:retainedFiles").Get<int?>();
+
+                host.UseSerilog((builder, configuration) => configuration
+                    .WriteTo.Console(
+                        outputTemplate: template
+                    )
+                    .WriteTo.File(
+                        path: path,
+                        outputTemplate: template,
+                        rollingInterval: RollingInterval.Day,
+                        retainedFileCountLimit: retainedFiles,
+                        shared: true
+                    )
+                    .MinimumLevel.Information()
+                    .MinimumLevel.Override("System", global::Serilog.Events.LogEventLevel.Warning)
+                    .MinimumLevel.Override("Microsoft", global::Serilog.Events.LogEventLevel.Warning)
+                    .MinimumLevel.Override("Microsoft.Hosting.LifeTime", global::Serilog.Events.LogEventLevel.Warning)
+                    .Enrich.FromLogContext()
+                );
+
+                UseLogger = useLogger;
+            }
+
+            return host;
+        }
+
 
         public static IHostBuilder AddLogger(this IHostBuilder host, bool useLogger = false)
         { 
             if (useLogger)
             {
+                
                 host.UseSerilog((builder, configuration) => configuration
                     .WriteTo.Console(
                         outputTemplate: "[{Level}][{Timestamp:yyyy-MM-dd HH:mm:ss zzz}]{NewLine}{Message}{NewLine}{NewLine}"
@@ -46,7 +79,7 @@ namespace coer91.NET
         }
 
 
-        public static void Wrning(string message)
+        public static void Warning(string message)
         {
             if (UseLogger) Log.Warning(message);
         }
