@@ -13,6 +13,13 @@ namespace coer91.NET
         public static string SetDecimals(int? value, int decimals = 2)
             => value is not null ? SetDecimals(value.ToString(), decimals) : SetDecimals("0", decimals);
 
+        public static string SetDecimals(long value, int decimals = 2)
+            => SetDecimals(value.ToString(), decimals);
+
+
+        public static string SetDecimals(long? value, int decimals = 2)
+            => value is not null ? SetDecimals(value.ToString(), decimals) : SetDecimals("0", decimals);
+
 
         public static string SetDecimals(float value, int decimals = 2)
             => SetDecimals(value.ToString(), decimals);
