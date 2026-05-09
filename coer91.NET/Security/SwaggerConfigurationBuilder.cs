@@ -9,10 +9,11 @@ namespace coer91.NET
 {
     public class SwaggerConfigurationBuilder(string _title, WebApplicationBuilder _builder)
     {
+        public static bool showInProduction = true; 
 
         protected string _version = "";
         protected string _documentName = "v1";
-        protected bool _securityDefinitionBearer = false;
+        protected bool _securityDefinitionBearer = true;
         protected bool _setComments = false;
 
         protected string _name = "Authorization";
@@ -81,7 +82,13 @@ namespace coer91.NET
         {
             _description = description;
             return this;
-        } 
+        }
+
+        public SwaggerConfigurationBuilder ShowInProduction(bool showInProduction = true)
+        {
+            SwaggerConfigurationBuilder.showInProduction = showInProduction;
+            return this;
+        }
 
         public void Build() 
         {

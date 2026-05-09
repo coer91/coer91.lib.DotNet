@@ -4,10 +4,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace coer91.NET
 {
-    public class CorsConfigurationBuilder(string _policy, WebApplicationBuilder _builder)
+    public class CorsConfigurationBuilder(string _policyName, WebApplicationBuilder _builder)
     {
         private readonly string[] HTTP_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE"];
-
+        
         protected bool _allowCredentials = false;         
         protected bool _allowAnyHeader = true;
         protected bool _allowAnyMethod = true;
@@ -16,7 +16,7 @@ namespace coer91.NET
         protected string[] _headers = [];
         protected string[] _methods = [];
         protected string[] _domains = [];
-        protected string[] _origins = [];
+        protected string[] _origins = []; 
 
 
         public CorsConfigurationBuilder AllowedMethods(params string[] methods)
@@ -74,7 +74,7 @@ namespace coer91.NET
                 
                 else if(_origins.Length > 0) builder.WithOrigins(_origins);
 
-                options.AddPolicy(_policy, builder.Build());
+                options.AddPolicy(_policyName, builder.Build());
             });
         }
     }

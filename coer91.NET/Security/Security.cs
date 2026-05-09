@@ -13,6 +13,8 @@ namespace coer91.NET
     public class Security
     {
         private readonly WebApplicationBuilder _builder;
+        private readonly string _PolicyName = "coer91.NET"; 
+        public WebApplication _app;
 
         public static string ProjectName { get; private set; } = Assembly.GetEntryAssembly()?.GetName()?.Name;
         public static bool IsDevelopment { get; private set; } 
@@ -44,13 +46,30 @@ namespace coer91.NET
         public BearerConfigurationBuilder AddAuthenticationBearer(string secretKey = "") => new(secretKey, _builder);
 
 
-        public CorsConfigurationBuilder AddCors(string policy = "coer91") => new(policy, _builder);
+        public CorsConfigurationBuilder AddCors() => new(_PolicyName, _builder);
 
 
         public void AddLogger(bool enable = true) => _builder.Host.AddLogger(enable); 
 
 
         public void AddLogger(IConfiguration configuration)  => _builder.Host.AddLogger(configuration);
+
+
+        public WebApplication AddControllers()
+        {
+            _app = _builder.Build();
+            _app.UseCors(_PolicyName);
+            _app.UseSwagger(SwaggerConfigurationBuilder.showInProduction);
+            _app.UseHttpsRedirection();
+            _app.UseAuthentication();
+            _app.UseAuthorization();
+            _app.UseLogCode500();
+            _app.MapControllers();
+            return _app;
+        }
+
+
+        public void Run() => _app.Run();
 
 
         #region static

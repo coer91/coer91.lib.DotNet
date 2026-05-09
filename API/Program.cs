@@ -12,9 +12,5 @@ security.AddSwagger("coer91.NET").SetSecurityDefinitionBearer().Build();
 security.AddAuthenticationBearer().Build();
 security.AddCors().Build();
 security.AddLogger(true);
-
-//Web Application
-WebApplication app = builder.Build();
-app.UseSwagger(true);
-app.UseCors("coer91");
-app.UseSetup();
+security.AddControllers();
+security.Run();

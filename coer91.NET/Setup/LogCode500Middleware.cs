@@ -12,7 +12,7 @@ namespace coer91.NET
 
                
         public static IApplicationBuilder UseLogCode500(this IApplicationBuilder app)
-            => app.UseMiddleware<LogCode500>();
+            => Logger.UseLogger ? app.UseMiddleware<LogCode500>() : app;
 
         private class LogCode500 : IMiddleware
         { 

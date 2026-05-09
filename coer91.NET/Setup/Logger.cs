@@ -47,7 +47,7 @@ namespace coer91.NET
         }
 
 
-        public static IHostBuilder AddLogger(this IHostBuilder host, bool useLogger = false)
+        public static IHostBuilder AddLogger(this IHostBuilder host, bool useLogger = true)
         { 
             if (useLogger)
             {
