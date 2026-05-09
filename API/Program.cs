@@ -1,33 +1,20 @@
 using coer91.NET; 
 
 /* Builder Configuration */
-var builder = WebApplication.CreateBuilder(args);
-builder.Host.AddLogger(builder.Configuration);
-builder.Services.AddControllers().AddNewtonsoftJson();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddHttpContextAccessor();
+var builder = WebApplication.CreateBuilder(args); 
 
 //Dependency Injection 
-//builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-//builder.Services.AddDBConnection(builder.Configuration);
-//builder.Services.AddRepositoryCollection();
-//builder.Services.AddMicroserviceCollection();
-//builder.Services.AddExceptionFilter();
-//builder.Services.AddLogCode500();
+builder.Services.AddSetupCollection();  
 
 //Security 
 Security security = new(builder);
-//security.AddSwagger("My System").Set();
-//security.AddAuthenticationBearer().Set();
-//security.AddCors().Set();
+security.AddSwagger("coer91.NET").SetSecurityDefinitionBearer().Build();
+security.AddAuthenticationBearer().Build();
+security.AddCors().Build();
+security.AddLogger(true);
 
 //Web Application
 WebApplication app = builder.Build();
 app.UseSwagger(true);
 app.UseCors("coer91");
-app.UseHttpsRedirection();
-app.UseAuthentication();
-app.UseAuthorization();
-//app.UseLogCode500();
-app.MapControllers();
-app.Run();
+app.UseSetup();

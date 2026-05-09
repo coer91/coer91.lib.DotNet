@@ -6,6 +6,10 @@ namespace coer91.NET
 {
     public static class Logger
     {
+        private static readonly string _defaultPath = "../Logger/.log";
+        private static readonly string _defaultTemplate = "[{Level}][{Timestamp:yyyy-MM-dd HH:mm:ss zzz}]{NewLine}{Message}{NewLine}{NewLine}{NewLine}";
+        private static readonly int _defaultRetainedFiles = 31;
+
         public static bool UseLogger { get; private set; } = false; 
 
         public static IHostBuilder AddLogger(this IHostBuilder host, IConfiguration configuration)
@@ -14,9 +18,9 @@ namespace coer91.NET
            
             if (useLogger)
             {
-                string path = configuration.GetSection("Logger:Path").Get<string>() ?? "../Logger/.log";
-                string template = configuration.GetSection("Logger:Template").Get<string>() ?? "[{Level}][{Timestamp:yyyy-MM-dd HH:mm:ss zzz}]{NewLine}{Message}{NewLine}{NewLine}";
-                int? retainedFiles = configuration.GetSection("Logger:retainedFiles").Get<int?>();
+                string path = configuration.GetSection("Logger:Path").Get<string>() ?? _defaultPath;
+                string template = configuration.GetSection("Logger:Template").Get<string>() ?? _defaultTemplate;
+                int retainedFiles = configuration.GetSection("Logger:retainedFiles").Get<int?>() ?? _defaultRetainedFiles;
 
                 host.UseSerilog((builder, configuration) => configuration
                     .WriteTo.Console(
@@ -50,13 +54,13 @@ namespace coer91.NET
                 
                 host.UseSerilog((builder, configuration) => configuration
                     .WriteTo.Console(
-                        outputTemplate: "[{Level}][{Timestamp:yyyy-MM-dd HH:mm:ss zzz}]{NewLine}{Message}{NewLine}{NewLine}"
+                        outputTemplate: _defaultTemplate
                     )
                     .WriteTo.File(
-                        path: "../Logger/.log",
-                        outputTemplate: "[{Level}][{Timestamp:yyyy-MM-dd HH:mm:ss zzz}]{NewLine}{Message}{NewLine}{NewLine}",
+                        path: _defaultPath,
+                        outputTemplate: _defaultTemplate,
                         rollingInterval: RollingInterval.Day,
-                        retainedFileCountLimit: 7,
+                        retainedFileCountLimit: _defaultRetainedFiles,
                         shared: true
                     )
                     .MinimumLevel.Information()

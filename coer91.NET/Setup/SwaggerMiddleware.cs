@@ -3,7 +3,7 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace coer91.NET
 {
-    public static class UseSwaggerMiddleware
+    public static class SwaggerMiddleware
     { 
         public static IApplicationBuilder UseSwagger(this WebApplication app, bool showInProduction)
         {              

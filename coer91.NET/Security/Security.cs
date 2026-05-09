@@ -6,7 +6,7 @@ using Microsoft.Extensions.Hosting;
 using System.Reflection;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Text;
+using System.Text; 
 
 namespace coer91.NET
 {
@@ -45,6 +45,12 @@ namespace coer91.NET
 
 
         public CorsConfigurationBuilder AddCors(string policy = "coer91") => new(policy, _builder);
+
+
+        public void AddLogger(bool enable = true) => _builder.Host.AddLogger(enable); 
+
+
+        public void AddLogger(IConfiguration configuration)  => _builder.Host.AddLogger(configuration);
 
 
         #region static
