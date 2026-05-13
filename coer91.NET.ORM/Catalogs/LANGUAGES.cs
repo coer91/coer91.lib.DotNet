@@ -24,5 +24,11 @@
             public const int Id = 4;
             public const string Name = "中國人";
         }
+
+        public static class KOREAN
+        {
+            public const int Id = 5;
+            public const string Name = "한국어";
+        } 
     }
 } 
