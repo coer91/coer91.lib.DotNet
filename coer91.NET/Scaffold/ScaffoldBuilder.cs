@@ -3,10 +3,12 @@
     public abstract class ScaffoldBuilder
     {
         protected string _project;
-        protected string _contextPath;
+        protected string _database;
+        protected List<string> _databaseList;
+        protected string _contextPath = "../Repositories";
         protected string _contextName;
-        protected string _repositoryInterfaceOutput;
-        protected string _repositoryOutput;
+        protected string _repositoryInterfaceOutput = "../Repositories";
+        protected string _repositoryOutput = "../Repositories";
         protected string _dtoOutput;
         protected string _mapperOutput;
         protected string _serviceInterfaceOutput;
@@ -25,6 +27,7 @@
         private bool _allFiles;
         private bool _setRepositoryConfig = false;
         private bool _setServiceConfig = false;
+        private bool _setTestConfig = false;
 
 
         private struct BUILD
@@ -47,6 +50,81 @@
             _consoleMessage += $"{"".PadLeft(15, '*')}{"",-6}Scaffold{"",-6}{"".PadRight(15, '*')}\n";
             _consoleMessage += $"{"".PadRight(50, '*')}\n";
             Console.WriteLine(_consoleMessage);
+        }
+
+
+        protected void SetPaths()
+        {
+            _contextPath = $"{_contextPath}/{_database}/Database";
+            _repositoryInterfaceOutput = $"{_repositoryInterfaceOutput}/{_database}/Interfaces";
+            _repositoryOutput = $"{_repositoryOutput}/{_database}/Repository";
+            //_dtoOutput = $"{_dtoOutput}/{_database}";
+            //_mapperOutput = $"{_mapperOutput}/{_database}";
+            //_serviceInterfaceOutput = $"{_serviceInterfaceOutput}/{_database}/Interfaces";
+            //_serviceOutput = $"{_serviceOutput}/{_database}/Services";
+            //_controllerOutput = $"{_controllerOutput}/{_database}/Controllers";
+            //_testOutput = $"{_testOutput}/{_database}";
+        }
+
+
+        protected void GetDatabase()
+        {
+            if (_databaseList.Count != 0)
+            {
+                if (_databaseList.Count == 1)
+                    _database = _databaseList.First();
+
+                else while (true)
+                {
+                    Console.Clear();
+                    Console.WriteLine(_consoleMessage);
+
+                    for (int i = 1; i <= _databaseList.Count; i++)
+                        Console.WriteLine($"  {i}) {_databaseList[i - 1]}");
+
+                    Console.Write($"\nSelect a Database: ");
+
+                    string database = Console.ReadLine();
+
+                    if (string.IsNullOrWhiteSpace(database))
+                    {
+                        Alert("Select a Database...");
+                        continue;
+                    }
+
+                    if (int.TryParse(database, out int option))
+                    {
+                        try
+                        {
+                            _database = _databaseList[option - 1];
+                        }
+                        catch
+                        {
+                            _database = null;
+                        }
+                    }
+
+                    else
+                    {
+                        try
+                        {
+                            _database = _databaseList.First(x => x.Equals(database, StringComparison.OrdinalIgnoreCase));
+                        }
+                        catch
+                        {
+                            _database = null;
+                        }
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(_database)) break;
+                    Alert($"Option {database} Not Found...");
+                }
+            }
+
+            else
+                throw new Exception("No database found in the context...");
+
+            _consoleMessage += $"\nDatabase: {_database}";
         }
 
 
@@ -84,7 +162,8 @@
         {
             try
             {
-                string path = $"{_contextPath}/Context.cs";
+                string path = $"{_contextPath}/${_database}Context.cs";
+
                 if (File.Exists(path))
                 {
                     string row = string.Empty;
@@ -394,7 +473,7 @@
         protected void CreateService()
         {
             if (Directory.Exists(_serviceOutput))
-            { 
+            {
                 string path = BeginBuild(BUILD.Service, _serviceOutput, $"{_class}Service.cs");
 
                 if (path is not null)
@@ -439,15 +518,15 @@
                     streamWriter.WriteLine();
                     streamWriter.WriteLine("\t\t\ttry");
                     streamWriter.WriteLine("\t\t\t{");
-                    if (useBasicLogic) 
-                    { 
+                    if (useBasicLogic)
+                    {
                         streamWriter.WriteLine($"\t\t\t\t{_dbSet} entity = await _repository.Get{_class}By(x => x.Id == {_variable}Id);");
                         streamWriter.WriteLine();
                         streamWriter.WriteLine("\t\t\t\tif (entity is null)");
                         streamWriter.WriteLine("\t\t\t\t\treturn response.NotFound();");
                         streamWriter.WriteLine();
                         streamWriter.WriteLine("\t\t\t\t//Response");
-                        streamWriter.WriteLine($"\t\t\t\tresponse.Data = _mapper.Map<{_dto}>(entity);"); 
+                        streamWriter.WriteLine($"\t\t\t\tresponse.Data = _mapper.Map<{_dto}>(entity);");
                     }
                     streamWriter.WriteLine("\t\t\t}");
                     streamWriter.WriteLine();
@@ -469,12 +548,12 @@
                     streamWriter.WriteLine("\t\t\ttry");
                     streamWriter.WriteLine("\t\t\t{");
                     if (useBasicLogic)
-                    { 
+                    {
                         streamWriter.WriteLine($"\t\t\t\tList<{_dbSet}> entities = await _repository.Get{_class}List(x => true);");
                         streamWriter.WriteLine($"\t\t\t\tList<{_dto}> dtoList = _mapper.Map<List<{_dto}>>(entities);");
                         streamWriter.WriteLine();
                         streamWriter.WriteLine("\t\t\t\t//Response");
-                        streamWriter.WriteLine("\t\t\t\tresponse.Data = [.. dtoList.OrderBy(x => x.Name)];"); 
+                        streamWriter.WriteLine("\t\t\t\tresponse.Data = [.. dtoList.OrderBy(x => x.Name)];");
                     }
                     streamWriter.WriteLine("\t\t\t}");
                     streamWriter.WriteLine();
@@ -495,8 +574,8 @@
                     streamWriter.WriteLine();
                     streamWriter.WriteLine("\t\t\ttry");
                     streamWriter.WriteLine("\t\t\t{");
-                    if (useBasicLogic) 
-                    { 
+                    if (useBasicLogic)
+                    {
                         streamWriter.WriteLine("\t\t\t\t//Clean Data");
                         streamWriter.WriteLine($"\t\t\t\t{dto}.Name = {dto}.Name.CleanUpBlanks().FirstCharToUpper();");
                         streamWriter.WriteLine();
@@ -537,8 +616,8 @@
                     streamWriter.WriteLine();
                     streamWriter.WriteLine("\t\t\ttry");
                     streamWriter.WriteLine("\t\t\t{");
-                    if (useBasicLogic) 
-                    { 
+                    if (useBasicLogic)
+                    {
                         streamWriter.WriteLine("\t\t\t\t//Clean Data");
                         streamWriter.WriteLine($"\t\t\t\t{dto}.Name = {dto}.Name.CleanUpBlanks().FirstCharToUpper();");
                         streamWriter.WriteLine();
@@ -563,7 +642,7 @@
                         streamWriter.WriteLine($"\t\t\t\tentity = await _repository.Update{_class}(entity);");
                         streamWriter.WriteLine();
                         streamWriter.WriteLine("\t\t\t\t//Response");
-                        streamWriter.WriteLine($"\t\t\t\tresponse.Data = _mapper.Map<{_dto}>(entity);"); 
+                        streamWriter.WriteLine($"\t\t\t\tresponse.Data = _mapper.Map<{_dto}>(entity);");
                     }
                     streamWriter.WriteLine("\t\t\t}");
                     streamWriter.WriteLine();
@@ -584,8 +663,8 @@
                     streamWriter.WriteLine();
                     streamWriter.WriteLine("\t\t\ttry");
                     streamWriter.WriteLine("\t\t\t{");
-                    if (useBasicLogic) 
-                    { 
+                    if (useBasicLogic)
+                    {
                         streamWriter.WriteLine("\t\t\t\t//Get");
                         streamWriter.WriteLine($"\t\t\t\t{_dbSet} entity = await _repository.Get{_class}By(x => x.Id == {_variable}Id);");
                         streamWriter.WriteLine();
@@ -610,7 +689,7 @@
                         streamWriter.WriteLine($"\t\t\t\tentity = await _repository.Update{_class}(entity);");
                         streamWriter.WriteLine();
                         streamWriter.WriteLine($"\t\t\t\t//Response");
-                        streamWriter.WriteLine($"\t\t\t\tresponse.Data = _mapper.Map<{_dto}>(entity);"); 
+                        streamWriter.WriteLine($"\t\t\t\tresponse.Data = _mapper.Map<{_dto}>(entity);");
                     }
                     streamWriter.WriteLine("\t\t\t}");
                     streamWriter.WriteLine();
@@ -793,6 +872,8 @@
 
         protected void CreateTests()
         {
+            if (string.IsNullOrWhiteSpace(_testOutput)) return;
+
             if (Directory.Exists(_testOutput))
             {
                 string path = BeginBuild(BUILD.Tests, _testOutput, $"{_class}Test.cs");
@@ -890,7 +971,7 @@
                     if (_setServiceConfig)
                         SetServiceCollection(BUILD.Service);
 
-                    if (_setServiceConfig)
+                    if (_setTestConfig)
                         SetServiceCollection(BUILD.Tests);
                 }
             }
@@ -901,6 +982,8 @@
                 {
                     if (collection.Equals(BUILD.Tests))
                     {
+                        if (string.IsNullOrWhiteSpace(_xunitSetupPath)) return;
+
                         string path = $"{_xunitSetupPath}/XunitSetup.cs";
 
                         if (File.Exists(path))
@@ -946,7 +1029,7 @@
 
                     else
                     {
-                        string prefix = collection.Equals(BUILD.Service) ? "Microservice" : _project;
+                        string prefix = collection.Equals(BUILD.Service) ? "Microservice" : _database;
                         string path = $"{_serviceCollectionPath}/{prefix}Collection.cs";
 
                         if (File.Exists(path))
@@ -989,7 +1072,7 @@
         }
 
 
-        private Dictionary<double, string> GetContentFile(string path)
+        private static Dictionary<double, string> GetContentFile(string path)
         {
             int row = 0;
             string line;

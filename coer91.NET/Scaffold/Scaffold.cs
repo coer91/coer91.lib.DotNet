@@ -9,6 +9,13 @@
         }
 
 
+        public Scaffold SetDatabaseList(IEnumerable<string> databaseList)
+        {
+            _databaseList = [.. databaseList];
+            return this;
+        }
+
+
         public Scaffold SetContextPath(string path)
         {
             _contextPath = $"../{path}";
@@ -101,6 +108,7 @@
                 do
                 {
                     PrintHeader();
+                    GetDatabase();
                     GetDbSet();
                     CreateAllFiles();
                     CreateIRepository();

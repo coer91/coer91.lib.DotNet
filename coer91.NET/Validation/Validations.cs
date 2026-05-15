@@ -90,7 +90,26 @@ namespace coer91.NET
         /// Gets an enumerable with the object's properties. 
         /// </summary>
         public static IEnumerable<string> GetProperties(object obj)
-            => IsNavigationProperty(obj) ? (obj?.GetType()?.GetProperties()?.Select(x => x.Name) ?? []) : [];
+        {
+            try
+            {
+                if (IsNavigationProperty(obj))
+                {
+                    Type type = obj?.GetType();
+
+                    if (type.Name.Equals("JObject") && type.FullName.Equals("Newtonsoft.Json.Linq.JObject"))
+                    {
+                        dynamic objDynamic = obj;
+                        IEnumerable<dynamic> properties = objDynamic.Properties();
+                        return properties.Select(x => $"{x.Name}");
+                    }
+
+                    return type?.GetProperties()?.Select(x => x.Name) ?? [];
+                }
+            }
+            catch { }
+            return [];
+        }
 
         #endregion
 
