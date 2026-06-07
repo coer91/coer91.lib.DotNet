@@ -4,10 +4,6 @@ namespace coer91.NET
 {
     public static class Files
     {
-        public static readonly string[] CSV_EXTENSIONS = ["xls", "xlsx", "csv"];
-        public static readonly string[] CSV_CONTENT_TYPES = ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-excel.sheet.macroEnabled.12"];
-        
-
         /// <summary>
         /// Get Extension File
         /// </summary> 
@@ -30,61 +26,73 @@ namespace coer91.NET
         }
 
 
-        /// <summary>
-        /// Validate if is csv type file
-        /// </summary> 
-        public static bool IsCSV(IFormFile file)
-            => Array.Exists(CSV_EXTENSIONS, extension => extension.Equals(GetExtension(file)));
-
-
-        #region IMAGE
-
-        public static readonly string[] IMAGES_EXTENSIONS = ["png", "jpg", "jpeg", "gif", "svg", "ico"];
-        public static readonly string[] IMAGES_CONTENT_TYPES = ["image/png", "image/jpeg", "image/gif", "image/svg+xml"];
-
-        /// <summary>
-        /// Validate if is an image type file
-        /// </summary> 
-        public static bool IsImage(IFormFile file)
-            => Array.Exists(IMAGES_EXTENSIONS, extension => extension.Equals(GetExtension(file)));
-
-       
-        /// <summary>
-        /// Convert a image file to byte array
-        /// </summary> 
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        /// <exception cref="FormatException"></exception> 
-        public static byte[] ToImageBytes(IFormFile image, int maxMB = 4)
+        public class CSV 
         {
-            if (image.Length > (maxMB * 1048576)) //1 MB = 1048576 Bytes
-                throw new ArgumentOutOfRangeException(string.Empty, $"The maximun size allowed is <b>{maxMB}mb</b>");
+            public static readonly string[] EXTENSIONS = FilesCSV.EXTENSIONS;
+            public static readonly string[] CONTENT_TYPES = FilesCSV.CONTENT_TYPES;
 
-            //Validate Format             
-            if (IsImage(image))
-            {
-                using MemoryStream memoryStream = new();
-                image.CopyTo(memoryStream);
-                return memoryStream.ToArray();
-            }
-
-            //Error Message
-            string message = $"Only the following formats are accepted:<br>";
-
-            for (int i = 0; i < IMAGES_CONTENT_TYPES.Length; i++)
-            {
-                message += $" - {IMAGES_CONTENT_TYPES[i]}";
-                message += (i == (IMAGES_CONTENT_TYPES.Length - 1)) ? string.Empty : "<br>";
-            }
-
-            throw new FormatException(message);
+            /// <summary>
+            /// Validate if is csv type file
+            /// </summary>
+            public static bool IsCSV(IFormFile file)
+                => FilesCSV.IsCSV(file);
         }
 
+         
+        public static class Images
+        {
+            public static readonly string[] EXTENSIONS = FilesImages.EXTENSIONS;
+            public static readonly string[] CONTENT_TYPES = FilesImages.CONTENT_TYPES;
 
-        /// <summary>
-        /// Convert a byte array to Base64
-        /// </summary>
-        public static string ToImageBase64(byte[] image, string noImage = "", string extension = "png")
-            => (image is not null) ? $"data:image/{extension};base64,{Convert.ToBase64String(image)}" : noImage;
-        #endregion
+            /// <summary>
+            /// Validate if is an image type file
+            /// </summary> 
+            public static bool IsImage(IFormFile file)
+                => FilesImages.IsImage(file);
+
+
+            /// <summary>
+            /// Convert a image file to byte array
+            /// </summary> 
+            /// <exception cref="ArgumentOutOfRangeException"></exception>
+            /// <exception cref="FormatException"></exception> 
+            public static byte[] ToImageBytes(IFormFile image, int maxMB = 4)
+                => FilesImages.ToImageBytes(image, maxMB);
+
+
+            /// <summary>
+            /// Convert a byte array to Base64
+            /// </summary>
+            public static string ToImageBase64(byte[] image, string noImage = "", string extension = "png")
+                => FilesImages.ToImageBase64(image, noImage, extension);
+
+
+            /// <summary>
+            ///  
+            /// </summary>
+            public static string GenerateBarcodeBase64(object value, NetBarcode.Type barcodeType = NetBarcode.Type.Code128)
+                => FilesImages.GenerateBarcodeBase64(value, barcodeType);
+
+
+            /// <summary>
+            ///  
+            /// </summary>
+            public static string GenerateBarcode(object value, string width = null, string height = null, string showCaption = null, string captionAlign = null, string caption = null)
+                => FilesImages.GenerateBarcode(value, width, height, showCaption, captionAlign, caption);
+
+
+            /// <summary>
+            ///  
+            /// </summary>
+            public static string GenerateQRBase64(object value)
+                => FilesImages.GenerateQRBase64(value);
+
+
+            /// <summary>
+            ///  
+            /// </summary>
+            public static string GenerateQR(object value, string size = null, string showCaption = null, string captionAlign = null, string caption = null)
+                => FilesImages.GenerateQR(value, size, showCaption, captionAlign, caption);
+        } 
     }
 }
