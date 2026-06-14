@@ -33,14 +33,12 @@ namespace coer91.NET
                     Controller    = context.Request.RouteValues.TryGetValue("controller", out var controller) ? controller.ToString() : string.Empty,
                     Method        = context.Request.RouteValues.TryGetValue("action", out var action) ? action.ToString() : string.Empty,
                     UserId        = int.TryParse(Security.GetClaimValue("UserId", context), out int userId) ? userId : 0,
-                    User          = Security.GetClaimValue("User", context),
-                    RoleId        = int.TryParse(Security.GetClaimValue("RoleId", context), out int roleId) ? roleId : 0,
-                    Role          = Security.GetClaimValue("Role", context),
+                    User          = context.Request.Headers.TryGetValue("Clien-User", out var user) ? user : Security.GetClaimValue("User", context),
                     PartnerId     = int.TryParse(Security.GetClaimValue("PartnerId", context), out int partnerId) ? partnerId : 0,
-                    Partner       = Security.GetClaimValue("Partner", context),
+                    Partner       = Security.GetClaimValue("Partner", context), 
                     UtcOffset     = context.Request.Headers.TryGetValue("Utc-Offset", out var utcOffset) && int.TryParse(utcOffset, out int utcOffsetInteger) ? utcOffsetInteger : 0,
-                    JWTExpiration = Security.GetClaimValue("ExpirationDate", context).ToDateTime(),
                     Language      = Security.GetClaimValue("Language", context),
+                    JWTExpiration = Security.GetClaimValue("ExpirationDate", context).ToDateTime(),
                 } : null;
             }
 

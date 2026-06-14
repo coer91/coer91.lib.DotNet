@@ -14,15 +14,15 @@ namespace coer91.NET
     {
         private readonly WebApplicationBuilder _builder;
         private readonly string _PolicyName = "coer91.NET"; 
-        public WebApplication _app;
+        public WebApplication _app; 
 
         public static string ProjectName { get; private set; } = Assembly.GetEntryAssembly()?.GetName()?.Name;
-        public static bool IsDevelopment { get; private set; } 
-        public static bool IsStaging { get; private set; }  
-        public static bool IsProduction { get; private set; }  
+        public static bool IsDevelopment { get; private set; }
+        public static bool IsStaging { get; private set; }
+        public static bool IsProduction { get; private set; }
 
 
-        public Security(WebApplicationBuilder builder) 
+        public Security(WebApplicationBuilder builder)
         {
             _builder = builder;
             IsDevelopment = _builder.Environment.IsDevelopment();
@@ -33,13 +33,10 @@ namespace coer91.NET
 
         public SwaggerConfigurationBuilder AddSwagger(string title = "")
         {
-            if (string.IsNullOrWhiteSpace(title))
-                title = ProjectName;
+            if (!string.IsNullOrWhiteSpace(title))
+                ProjectName = title;
 
-            else
-                ProjectName = title;  
-
-            return new(title, _builder); 
+            return new(_builder);
         }
 
 
@@ -49,10 +46,10 @@ namespace coer91.NET
         public CorsConfigurationBuilder AddCors() => new(_PolicyName, _builder);
 
 
-        public void AddLogger(bool enable = true) => _builder.Host.AddLogger(enable); 
+        public void AddLogger(bool enable = true) => _builder.Host.AddLogger(enable);
 
 
-        public void AddLogger(IConfiguration configuration)  => _builder.Host.AddLogger(configuration);
+        public void AddLogger(IConfiguration configuration) => _builder.Host.AddLogger(configuration);
 
 
         public WebApplication AddControllers()

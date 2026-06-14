@@ -76,7 +76,6 @@ namespace coer91.NET
                 return value;
             }
         }
-
         #endregion
 
 

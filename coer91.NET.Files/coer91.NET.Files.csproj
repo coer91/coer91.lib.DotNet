@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.0.3</Version>
+    <Version>1.0.15</Version>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageId>coer91.NET.ORM</PackageId>
-    <Title>coer91.NET.ORM</Title>
+    <PackageId>coer91.NET.Files</PackageId>
+    <Title>coer91.NET.Files</Title>
     <Authors>Christian Omar Escamilla Rodríguez</Authors>
     <Description>Plugin for dotnet 10</Description>
     <PackageIcon>coer91.png</PackageIcon>
@@ -18,18 +18,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.9">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.9" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.9" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.9">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-    <PackageReference Include="Oracle.EntityFrameworkCore" Version="10.23.26200" />
+    <PackageReference Include="itext" Version="9.6.0" />
+    <PackageReference Include="itext.bouncy-castle-adapter" Version="9.6.0" />
+    <PackageReference Include="itext.pdfhtml" Version="6.3.2" />
+    <PackageReference Include="NetBarcode" Version="1.8.3" />
+    <PackageReference Include="QRCoder.Core" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,13 +35,12 @@
       <Pack>True</Pack>
     </None>
     <None Update="LICENSE">
-      <Pack>True</Pack>
       <PackagePath>\</PackagePath>
+      <Pack>True</Pack>
     </None>
     <None Update="README.md">
       <PackagePath>\</PackagePath>
       <Pack>True</Pack>
     </None>
-  </ItemGroup>
-
+  </ItemGroup> 
 </Project>

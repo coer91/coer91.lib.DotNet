@@ -8,7 +8,7 @@ namespace coer91.NET
     {
         //From
         protected string _from = "";
-        protected string _sender = "COER 91";
+        protected string _sender = "coer91.NET";
         protected IEnumerable<string> _to = [];
         protected IEnumerable<string> _cc = [];
         protected string _subject = "";
@@ -115,20 +115,26 @@ namespace coer91.NET
 
             try
             {
-                _from = string.IsNullOrWhiteSpace(_from) 
+                _from = string.IsNullOrWhiteSpace(_from)
                     ? (_configuration.GetSection("Email:From").Get<string>() ?? string.Empty) : _from;
 
-                _user = string.IsNullOrWhiteSpace(_user) 
-                    ? (_configuration.GetSection("Email:User").Get<string>() ?? string.Empty) : _user;
-                
-                _user = string.IsNullOrWhiteSpace(_user) 
-                    ? _from : _user;
-
-                _sender = string.IsNullOrWhiteSpace(_sender) 
+                _sender = string.IsNullOrWhiteSpace(_sender)
                     ? (_configuration.GetSection("Email:Sender").Get<string>() ?? string.Empty) : _sender;
 
-                _password = string.IsNullOrWhiteSpace(_password) 
+                _user = string.IsNullOrWhiteSpace(_user)
+                    ? (_configuration.GetSection("Email:User").Get<string>() ?? string.Empty) : _user;
+
+                _user = string.IsNullOrWhiteSpace(_user)
+                    ? _from : _user;
+
+                _password = string.IsNullOrWhiteSpace(_password)
                     ? (_configuration.GetSection("Email:Password").Get<string>() ?? string.Empty) : _password;
+
+                _host = string.IsNullOrWhiteSpace(_host)
+                    ? (_configuration.GetSection("Email:Host").Get<string>() ?? string.Empty) : _host;
+
+                _port = _port <= 0
+                    ? int.Parse(_configuration.GetSection("Email:Port").Get<string>() ?? "0") : _port;
 
                 SmtpClient smtp = GetSMTPClient();
 
@@ -169,33 +175,25 @@ namespace coer91.NET
             <html>
                 <head>
                     <style>
-                        h1, h2, h3, h4, h5, h6, p, pre {{ margin: 0px; color: black; }} 
-                        .color-sky    {{ color: #0d6efd !important; }}
-                        .color-cyan   {{ color: #00ffff !important; }}
+                        h1, h2, h3, h4, h5, h6, p, pre {{ margin: 0px; color: black; }}                         
                         .color-green  {{ color: #198754 !important; }}
                         .color-yellow {{ color: #ffc107 !important; }}
                         .color-orange {{ color: #fd6031 !important; }}
-                        .color-red    {{ color: #dc3545 !important; }}
-                        .color-purple {{ color: #a615bc !important; }}
+                        .color-red    {{ color: #dc3545 !important; }}                        
                         .color-black  {{ color: #000000 !important; }}
                         .color-dark   {{ color: #292828 !important; }}
                         .color-gray   {{ color: #6c757d !important; }}
                         .color-light  {{ color: #ffffff !important; }}
-                        .color-smoke  {{ color: #f5f5f5 !important; }}
-                        .color-ghost  {{ color: #f8f8ff !important; }}
-                        .background-color-sky    {{ background-color: #0d6efd !important; }}
-                        .background-color-cyan   {{ background-color: #00ffff !important; }}
+                        .color-smoke  {{ color: #f5f5f5 !important; }} 
                         .background-color-green  {{ background-color: #198754 !important; }}
                         .background-color-yellow {{ background-color: #ffc107 !important; }}
                         .background-color-orange {{ background-color: #fd6031 !important; }}
-                        .background-color-red    {{ background-color: #dc3545 !important; }}
-                        .background-color-purple {{ background-color: #a615bc !important; }}
+                        .background-color-red    {{ background-color: #dc3545 !important; }}                        
                         .background-color-black  {{ background-color: #000000 !important; }}
                         .background-color-dark   {{ background-color: #292828 !important; }}
                         .background-color-gray   {{ background-color: #6c757d !important; }}
                         .background-color-light  {{ background-color: #ffffff !important; }}
                         .background-color-smoke  {{ background-color: #f5f5f5 !important; }}
-                        .background-color-ghost  {{ background-color: #f8f8ff !important; }} 
                     </style>
                 </head>                    
                 <body>{body}</body>

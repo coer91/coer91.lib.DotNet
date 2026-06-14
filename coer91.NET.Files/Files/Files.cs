@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace coer91.NET
+namespace coer91.NET.Files
 {
     public static class Files
     {
@@ -39,16 +39,17 @@ namespace coer91.NET
         }
 
          
-        public static class Images
+        public class Image
         {
-            public static readonly string[] EXTENSIONS = FilesImages.EXTENSIONS;
-            public static readonly string[] CONTENT_TYPES = FilesImages.CONTENT_TYPES;
+            public static readonly string[] EXTENSIONS    = FilesIMAGE.EXTENSIONS;
+            public static readonly string[] CONTENT_TYPES = FilesIMAGE.CONTENT_TYPES;
+
 
             /// <summary>
             /// Validate if is an image type file
             /// </summary> 
             public static bool IsImage(IFormFile file)
-                => FilesImages.IsImage(file);
+                => FilesIMAGE.IsImage(file);
 
 
             /// <summary>
@@ -56,43 +57,25 @@ namespace coer91.NET
             /// </summary> 
             /// <exception cref="ArgumentOutOfRangeException"></exception>
             /// <exception cref="FormatException"></exception> 
-            public static byte[] ToImageBytes(IFormFile image, int maxMB = 4)
-                => FilesImages.ToImageBytes(image, maxMB);
+            public static byte[] GetBytes(IFormFile image, int maxMB = 4)
+                => FilesIMAGE.GetBytes(image, maxMB);
 
 
             /// <summary>
             /// Convert a byte array to Base64
             /// </summary>
-            public static string ToImageBase64(byte[] image, string noImage = "", string extension = "png")
-                => FilesImages.ToImageBase64(image, noImage, extension);
+            public static string ToBase64(byte[] image, string noImage = "", string extension = "png")
+                => FilesIMAGE.ToBase64(image, noImage, extension);
+        }
 
 
-            /// <summary>
-            ///  
-            /// </summary>
-            public static string GenerateBarcodeBase64(object value, NetBarcode.Type barcodeType = NetBarcode.Type.Code128)
-                => FilesImages.GenerateBarcodeBase64(value, barcodeType);
+        public class PDF 
+        {
+            public class TEMPLATE_TYPE : PDF_TEMPLATE_TYPE { }
 
 
-            /// <summary>
-            ///  
-            /// </summary>
-            public static string GenerateBarcode(object value, string width = null, string height = null, string showCaption = null, string captionAlign = null, string caption = null)
-                => FilesImages.GenerateBarcode(value, width, height, showCaption, captionAlign, caption);
-
-
-            /// <summary>
-            ///  
-            /// </summary>
-            public static string GenerateQRBase64(object value)
-                => FilesImages.GenerateQRBase64(value);
-
-
-            /// <summary>
-            ///  
-            /// </summary>
-            public static string GenerateQR(object value, string size = null, string showCaption = null, string captionAlign = null, string caption = null)
-                => FilesImages.GenerateQR(value, size, showCaption, captionAlign, caption);
-        } 
+            public static FileDTO GenerateDocument(DocumentPdf documentPdf, object data = null, int offset = 0)
+                => FilesPDF.GenerateDocument(documentPdf, data, offset);
+        }
     }
 }

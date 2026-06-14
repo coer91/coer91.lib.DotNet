@@ -6,24 +6,15 @@ namespace coer91.NET
     public static class Validations
     {
         #region IsNavigationProperty
-
-        /// <summary>
-        ///  
-        /// </summary>
+                
         public static bool IsNavigationProperty<T>(T obj)
             => obj is not null && IsNavigationProperty(obj.GetType());
 
-
-        /// <summary>
-        ///  
-        /// </summary>
+        
         public static bool IsNavigationProperty(PropertyInfo property)
             => IsNavigationProperty(property.PropertyType);
 
-
-        /// <summary>
-        ///  
-        /// </summary>
+        
         public static bool IsNavigationProperty(Type type)
         { 
             return (type is not null) && !(
@@ -72,12 +63,9 @@ namespace coer91.NET
 
 
         #region IsCollection
-
-        /// <summary>
-        ///  
-        /// </summary>
         public static bool IsCollection(object obj)
             => obj is not null && obj is IEnumerable && obj is not string;
+
 
         public static bool IsCollection<T>()
             => typeof(T) != typeof(string) && typeof(IEnumerable).IsAssignableFrom(typeof(T));

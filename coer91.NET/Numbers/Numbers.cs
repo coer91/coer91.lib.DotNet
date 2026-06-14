@@ -50,7 +50,7 @@ namespace coer91.NET
             try
             {
                 if (string.IsNullOrWhiteSpace(value) || !double.TryParse(value, out double _))
-                    return SetDecimals(0, decimals);
+                    return SetDecimals("0", decimals);
 
                 string valueInteger = string.Empty;
                 string valueDecimal = string.Empty;

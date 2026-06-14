@@ -1,32 +1,39 @@
-﻿using System.ComponentModel;
-using System.Globalization;
+﻿using System.Globalization;
 
 namespace coer91.NET
 {
     public static class Dates
     {
+        #region IsValidDateTime
         public static bool IsValidDateTime(string dateTime)
             => DateTime.TryParse(dateTime, out _);
 
 
+        public static bool IsValidDateTime(string dateTime, string format)
+            => DateTime.TryParseExact(dateTime, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out _);
+
+
         public static bool IsValidDateTime(DateTime? dateTime)
             => dateTime is not null;
+        #endregion
 
-                
+
+        #region GetCurrentDate
+        public static DateOnly GetCurrentDate()
+            => DateOnly.FromDateTime(GetCurrentDateTime());
+
+
         public static DateTime GetCurrentDateTime()
             => DateTime.Now;
 
 
-        public static DateOnly GetCurrentDate()
-            => DateOnly.FromDateTime(GetCurrentDateTime()); 
+        public static DateOnly GetCurrentDateUTC()
+           => DateOnly.FromDateTime(GetCurrentDateTimeUTC());
 
-        
+
         public static DateTime GetCurrentDateTimeUTC()
             => DateTime.UtcNow;
-
-
-        public static DateOnly GetCurrentDateUTC()
-            => DateOnly.FromDateTime(GetCurrentDateTimeUTC());
+        #endregion
 
 
         #region ToFormatTime
@@ -184,6 +191,15 @@ namespace coer91.NET
         #region ToDateTime 
         public static DateTime? ToDateTime(string dateTime)
             => IsValidDateTime(dateTime) ? DateTime.Parse(dateTime) : null;
+
+        public static DateTime? ToDateTime(dynamic dateTime)
+            => IsValidDateTime($"{dateTime}") ? DateTime.Parse($"{dateTime}") : null;
+
+        public static DateTime? ToDateTime(string dateTime, string format)
+            => IsValidDateTime(dateTime, format) ? DateTime.ParseExact(dateTime, format, CultureInfo.InvariantCulture) : null;
+
+        public static DateTime? ToDateTime(dynamic dateTime, string format)
+            => IsValidDateTime($"{dateTime}", format) ? DateTime.ParseExact($"{dateTime}", format, CultureInfo.InvariantCulture) : null;
 
         public static DateTime ToDateTime(DateOnly date)
             => date.ToDateTime(TimeOnly.MinValue); 

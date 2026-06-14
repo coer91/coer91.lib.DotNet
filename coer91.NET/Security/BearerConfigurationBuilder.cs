@@ -9,8 +9,8 @@ using System.Text;
 
 namespace coer91.NET
 {
-    public class BearerConfigurationBuilder(string _secretKey, WebApplicationBuilder _builder) 
-    {  
+    public class BearerConfigurationBuilder(string _secretKey, WebApplicationBuilder _builder)
+    {
         protected bool _setToControllers = false;
         protected bool _validateIssuer = false;
         protected bool _validateAudience = false;
@@ -55,11 +55,11 @@ namespace coer91.NET
         }
 
         public void Build()
-        {  
-            if(string.IsNullOrWhiteSpace(_secretKey)) 
+        {
+            if (string.IsNullOrWhiteSpace(_secretKey))
                 _secretKey = _builder.Configuration.GetSection("Security:SecretKey").Get<string>() ?? string.Empty;
 
-            if (string.IsNullOrWhiteSpace(_secretKey)) return;  
+            if (string.IsNullOrWhiteSpace(_secretKey)) return;
 
             _builder.Services
                 .AddAuthentication(options =>
@@ -75,7 +75,7 @@ namespace coer91.NET
                     ValidateIssuerSigningKey = _validateIssuerSigningKey,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey)),
                     ClockSkew = _clockSkew
-                }); 
+                });
 
             if (_setToControllers) _builder.Services.AddControllers(config =>
             {

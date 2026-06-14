@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.0.23</Version>
+    <Version>1.0.24</Version>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
@@ -19,18 +19,16 @@
   
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="16.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.7" />
-    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="10.0.7" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.3.9" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="10.0.7" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.7" />
-    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.18.0" />
-    <PackageReference Include="NetBarcode" Version="1.8.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="10.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.3.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="10.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.9" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.19.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-    <PackageReference Include="QRCoder.Core" Version="2.0.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.7" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.18.0" /> 
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.19.1" /> 
   </ItemGroup>      
 
   <ItemGroup>

@@ -7,12 +7,13 @@ using Microsoft.OpenApi;
 
 namespace coer91.NET
 {
-    public class SwaggerConfigurationBuilder(string _title, WebApplicationBuilder _builder)
+    public class SwaggerConfigurationBuilder(WebApplicationBuilder _builder)
     {
-        public static bool showInProduction = true; 
+        public static bool showInProduction = true;
+        public static bool showDefaultGroup = true;
+        public static string[] groupList = [];
 
         protected string _version = "";
-        protected string _documentName = "v1";
         protected bool _securityDefinitionBearer = true;
         protected bool _setComments = false;
 
@@ -20,19 +21,13 @@ namespace coer91.NET
         protected SecuritySchemeType _type = SecuritySchemeType.ApiKey;
         protected string _scheme = "bearer";
         protected string _format = "JWT";
-        protected ParameterLocation _location = ParameterLocation.Header; 
+        protected ParameterLocation _location = ParameterLocation.Header;
         protected string _description = "";
 
 
         public SwaggerConfigurationBuilder SetVersion(string version)
         {
             _version = version;
-            return this;
-        }
-
-        public SwaggerConfigurationBuilder SetDocumentName(string documentName)
-        {
-            _documentName = documentName;
             return this;
         }
 
@@ -90,26 +85,43 @@ namespace coer91.NET
             return this;
         }
 
-        public void Build() 
+        public SwaggerConfigurationBuilder ShowDefaultGroup(bool showDefaultGroup = true)
         {
-            if (_builder.Environment.IsDevelopment())
-                _title += " - Development";
+            SwaggerConfigurationBuilder.showDefaultGroup = showDefaultGroup;
+            return this;
+        }
 
-            else if (_builder.Environment.IsStaging())
-                _title += " - Staging";
+        public SwaggerConfigurationBuilder SetGroups(string[] groupList)
+        {
+            SwaggerConfigurationBuilder.groupList = groupList;
+            return this;
+        }
 
+        public void Build()
+        {
             if (string.IsNullOrWhiteSpace(_version))
                 _version = _builder.Configuration.GetSection("Version").Get<string>() ?? "0.0.0";
+
+            if (_builder.Environment.IsDevelopment())
+                _version = "Development";
+
+            else if (_builder.Environment.IsStaging())
+                _version = "Staging";
 
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
             _builder.Services.AddSwaggerGen(config =>
             {
-                config.SwaggerDoc(_documentName, new OpenApiInfo { Title = _title, Version = _version });
+                config.SwaggerDoc("api", new OpenApiInfo { Title = Security.ProjectName, Version = _version });
+
+                foreach (var group in groupList)
+                    config.SwaggerDoc(group, new OpenApiInfo { Title = Security.ProjectName, Version = _version });
+
+                config.DocInclusionPredicate((docName, apiDesc) => docName == (apiDesc.GroupName ?? "api"));
                 config.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
 
-                if (_securityDefinitionBearer) 
-                { 
+                if (_securityDefinitionBearer)
+                {
                     config.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
                     {
                         Name = _name,
@@ -123,10 +135,10 @@ namespace coer91.NET
                     config.AddSecurityRequirement(document => new OpenApiSecurityRequirement
                     {
                         [new OpenApiSecuritySchemeReference("bearer", document)] = []
-                    }); 
+                    });
                 }
 
-                if (_setComments) 
+                if (_setComments)
                 {
                     foreach (string xmlPath in Directory.EnumerateFiles(AppContext.BaseDirectory, "*.xml", SearchOption.TopDirectoryOnly))
                         config.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);

@@ -10,13 +10,13 @@ namespace coer91.NET
         public static IServiceCollection AddLogCode500(this IServiceCollection services)
             => services.AddTransient<LogCode500>();
 
-               
+
         public static IApplicationBuilder UseLogCode500(this IApplicationBuilder app)
             => Logger.UseLogger ? app.UseMiddleware<LogCode500>() : app;
 
         private class LogCode500 : IMiddleware
-        { 
-            private static readonly string[] sourceArray = ["POST", "PUT", "PATCH"]; 
+        {
+            private static readonly string[] sourceArray = ["POST", "PUT", "PATCH"];
 
             public async Task InvokeAsync(HttpContext context, RequestDelegate _delegate)
             {
@@ -26,7 +26,7 @@ namespace coer91.NET
                 context.Response.Body = memoryStream;
 
                 //Request Body
-                string requestBody = string.Empty; 
+                string requestBody = string.Empty;
                 try
                 {
                     if (sourceArray.Contains(context.Request.Method))
@@ -38,7 +38,7 @@ namespace coer91.NET
                         context.Request.Body.Position = 0;
                     }
                 }
-                catch { }    
+                catch { }
 
                 //Next
                 await _delegate(context);
@@ -47,13 +47,12 @@ namespace coer91.NET
 
                 //Response                 
                 try
-                { 
+                {
                     if (context.Response.StatusCode >= 500)
                     {
                         //Get user
                         HttpRequestDTO httpRequestDTO = context.ToHttpRequest();
-                        string user = $"[User: {httpRequestDTO?.User}";
-                        user += string.IsNullOrWhiteSpace(httpRequestDTO.Role) ? $" as {httpRequestDTO.Role}]\n" : "]\n";
+                        string user = $"[User: {httpRequestDTO?.User}]\n";
 
                         //Get Service
                         string service = $"[{Security.ProjectName} => {httpRequestDTO.Controller} => {httpRequestDTO.Method}]\n";
@@ -67,14 +66,14 @@ namespace coer91.NET
 
                         if (!string.IsNullOrWhiteSpace(requestBody))
                             requestBody = $"\nFromBody:\n{requestBody}";
-                        
-                        Logger.Error($"{service}{user}{message}{requestBody}"); 
+
+                        Logger.Error($"{service}{user}{message}{requestBody}");
                     }
 
                     memoryStream.Seek(0, SeekOrigin.Begin);
                     await memoryStream.CopyToAsync(contextResponse);
                 }
-                catch { } 
+                catch { }
 
                 context.Response.Body = contextResponse;
 

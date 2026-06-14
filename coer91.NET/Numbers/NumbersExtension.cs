@@ -7,6 +7,9 @@
         public static string SetDecimals(this int value, int decimals = 2)
             => Numbers.SetDecimals(value, decimals);
 
+        public static string SetDecimals(this long value, int decimals = 2)
+            => Numbers.SetDecimals(value, decimals);
+
         public static string SetDecimals(this float value, int decimals = 2)
             => Numbers.SetDecimals(value, decimals);
 
