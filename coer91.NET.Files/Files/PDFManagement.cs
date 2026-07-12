@@ -1,7 +1,5 @@
 ﻿using iText.Html2pdf;
 using iText.Kernel.Colors;
-using iText.Kernel.Font;
-using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas;
 using iText.Kernel.Pdf.Event;
@@ -16,7 +14,7 @@ using Rectangle = iText.Kernel.Geom.Rectangle;
 
 namespace coer91.NET.Files
 {
-    internal static class FilesPDF
+    public static class PDFManagement
     {
         private static readonly int marginDefaltHTML = 47;
         private static readonly int marginDefaltCANVAS = 35;

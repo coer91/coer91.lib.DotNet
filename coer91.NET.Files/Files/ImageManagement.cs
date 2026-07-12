@@ -2,14 +2,14 @@
 
 namespace coer91.NET.Files
 {
-    internal static class FilesIMAGE
+    public static class ImageManagement
     {
         public static readonly string[] EXTENSIONS = ["png", "jpg", "jpeg", "gif", "svg", "ico"];
         public static readonly string[] CONTENT_TYPES = ["image/png", "image/jpeg", "image/gif", "image/svg+xml"];
 
         
         public static bool IsImage(IFormFile file)
-            => Array.Exists(EXTENSIONS, extension => extension.Equals(Files.GetExtension(file)));
+            => Array.Exists(EXTENSIONS, extension => extension.Equals(FilesManagement.GetExtension(file)));
 
                
         public static byte[] GetBytes(IFormFile image, int maxMB = 4)
