@@ -1,4 +1,5 @@
-﻿using coer91.NET;
+﻿using API.AutoMappers;
+using coer91.NET;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,7 +7,7 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class LoggerController : ControllerBase
+    public class LoggerController(AutoMapper _mapper) : ControllerBase
     {
         [HttpGet] 
         [Route("[action]")]
@@ -15,6 +16,24 @@ namespace API.Controllers
             //var x = AppContext.BaseDirectory; 
             Logger.Information("This is an information log.");
             return Ok("");
+        }
+
+
+        [HttpGet]
+        [Route("[action]")]
+        public async Task<ActionResult> Mappers()
+        {
+
+            var x = new List<User>()
+            {
+                new() { Id = 1, Name = "John Doe"   },
+                new() { Id = 2, Name = "John Doe 2" },
+                new() { Id = 3, Name = "John Doe 3" },
+            };
+             
+            var xxx = _mapper.ToDTO(x);
+
+            return Ok();
         }
 
 

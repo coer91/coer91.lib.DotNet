@@ -11,9 +11,9 @@ namespace coer91.NET
             {
                 NamingStrategy = new DefaultNamingStrategy()
             });
-
-            service.AddAutoMapper(automapper => { }, AppDomain.CurrentDomain.GetAssemblies());
             
+            service.AddSingleton<AutoMapper>();
+
             service.AddEndpointsApiExplorer();
             
             service.AddHttpContextAccessor();
