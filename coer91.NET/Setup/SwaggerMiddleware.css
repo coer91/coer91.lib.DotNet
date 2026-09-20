@@ -1,0 +1,87 @@
+﻿.topbar-wrapper {
+    height: 35px !important;
+    max-height: 35px !important;
+} 
+
+.info {
+    margin: 20px 0px 15px 0px !important;
+}
+
+.scheme-container {
+    background: transparent !important;
+    padding: 0px !important;
+    box-shadow: none !important;
+    width: 100% !important;
+    max-width: 1460px !important;
+    margin: auto !important;
+    height: 0px !important;
+} 
+
+.opblock {
+    margin: 0px 0px 15px 0px !important;
+}
+
+.opblock-tag-section {
+    background-color: transparent !important;
+    border-radius: 10px 10px 0px 0px !important;
+}
+
+.opblock-tag {
+    border-radius: 10px 10px 0px 0px !important;
+    background-color: white !important;
+    margin-bottom: 15px !important;
+}
+
+.opblock-tag a.nostyle {
+    color: black !important;
+}
+
+hgroup.main {
+    margin: 0px !important;
+}
+
+span.url,
+.version-stamp,
+.topbar-wrapper .link svg {
+    display: none !important;
+} 
+
+.topbar-wrapper .link {
+    position: absolute !important;
+    background: url("/swagger/SwaggerMiddleware.png") no-repeat left !important;
+    background-size: contain !important;
+    width: 150px !important;
+    height: 45px !important;
+    display: inline-block !important; 
+}
+
+.btn.authorize.locked,
+.btn.authorize.unlocked {
+    background-color: white !important;
+    transform: translateY(-55px) !important;
+}
+
+.auth-container input {
+    width: 100% !important;
+}
+
+.auth-container form div div > *:not(:last-child) {
+    display: none !important;
+}
+
+.modal-ux-content {
+    padding: 0px !important;
+}
+
+.modal-ux-header h3 {
+    visibility: hidden;
+    position: relative;
+}
+
+.modal-ux-header h3::after {
+    content: "JWT BEARER";
+    visibility: visible;
+    position: absolute;
+    left: 10px;
+    top: 0px;
+}

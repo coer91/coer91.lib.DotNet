@@ -1,21 +1,21 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Serilog; 
+using Serilog;
 
 namespace coer91.NET
 {
     public static class Logger
     {
         private static readonly string _defaultPath = "../Logger/.log";
-        private static readonly string _defaultTemplate = "[{Level}][{Timestamp:yyyy-MM-dd HH:mm:ss zzz}]{NewLine}{Message}{NewLine}{NewLine}{NewLine}";
+        private static readonly string _defaultTemplate = "[{Level}]{NewLine}Date: {Timestamp:yyyy-MM-dd HH:mm:ss zzz}{NewLine}{Message}{NewLine}<!-- -->{NewLine}{NewLine}{NewLine}";
         private static readonly int _defaultRetainedFiles = 31;
 
-        public static bool UseLogger { get; private set; } = false; 
+        public static bool UseLogger { get; private set; } = false;
 
         public static IHostBuilder AddLogger(this IHostBuilder host, IConfiguration configuration)
         {
             bool useLogger = !string.IsNullOrWhiteSpace(configuration["Logger:Enable"]) && configuration["Logger:Enable"].Equals("true", StringComparison.CurrentCulture);
-           
+
             if (useLogger)
             {
                 string path = configuration.GetSection("Logger:Path").Get<string>() ?? _defaultPath;
@@ -48,10 +48,9 @@ namespace coer91.NET
 
 
         public static IHostBuilder AddLogger(this IHostBuilder host, bool useLogger = true)
-        { 
+        {
             if (useLogger)
             {
-                
                 host.UseSerilog((builder, configuration) => configuration
                     .WriteTo.Console(
                         outputTemplate: _defaultTemplate
@@ -77,7 +76,7 @@ namespace coer91.NET
         }
 
 
-        public static void Information(string message) 
+        public static void Information(string message)
         {
             if (UseLogger) Log.Information(message);
         }

@@ -11,10 +11,10 @@ namespace coer91.NET
     {
         public static bool showInProduction = true;
         public static bool showDefaultGroup = true;
+        public static bool securityDefinitionBearer = false;
         public static string[] groupList = [];
 
-        protected string _version = "";
-        protected bool _securityDefinitionBearer = true;
+        protected string _version = "";  
         protected bool _setComments = false;
 
         protected string _name = "Authorization";
@@ -29,11 +29,11 @@ namespace coer91.NET
         {
             _version = version;
             return this;
-        }
+        } 
 
         public SwaggerConfigurationBuilder SetSecurityDefinitionBearer(bool securityDefinition = true)
         {
-            _securityDefinitionBearer = securityDefinition;
+            securityDefinitionBearer = securityDefinition;
             return this;
         }
 
@@ -98,7 +98,7 @@ namespace coer91.NET
         }
 
         public void Build()
-        {
+        { 
             if (string.IsNullOrWhiteSpace(_version))
                 _version = _builder.Configuration.GetSection("Version").Get<string>() ?? "0.0.0";
 
@@ -111,16 +111,16 @@ namespace coer91.NET
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
             _builder.Services.AddSwaggerGen(config =>
-            {
+            {                 
                 config.SwaggerDoc("api", new OpenApiInfo { Title = Security.ProjectName, Version = _version });
-
+              
                 foreach (var group in groupList)
                     config.SwaggerDoc(group, new OpenApiInfo { Title = Security.ProjectName, Version = _version });
 
                 config.DocInclusionPredicate((docName, apiDesc) => docName == (apiDesc.GroupName ?? "api"));
-                config.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+                config.ResolveConflictingActions(apiDescriptions => apiDescriptions.First()); 
 
-                if (_securityDefinitionBearer)
+                if (securityDefinitionBearer)
                 {
                     config.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
                     {
@@ -146,4 +146,4 @@ namespace coer91.NET
             });
         }
     }
-} 
+}

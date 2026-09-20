@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
-using Microsoft.Extensions.DependencyInjection; 
+using Microsoft.Extensions.DependencyInjection;
 
 namespace coer91.NET
 {
     public class CorsConfigurationBuilder(string _policyName, WebApplicationBuilder _builder)
     {
         private readonly string[] HTTP_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE"];
-        
-        protected bool _allowCredentials = false;         
+
+        protected bool _allowCredentials = false;
         protected bool _allowAnyHeader = true;
         protected bool _allowAnyMethod = true;
         protected bool _allowAnyDomain = true;
@@ -16,7 +16,7 @@ namespace coer91.NET
         protected string[] _headers = [];
         protected string[] _methods = [];
         protected string[] _domains = [];
-        protected string[] _origins = []; 
+        protected string[] _origins = [];
 
 
         public CorsConfigurationBuilder AllowedMethods(params string[] methods)
@@ -25,20 +25,20 @@ namespace coer91.NET
             _allowAnyMethod = false;
             return this;
         }
-        
+
         public CorsConfigurationBuilder AllowedHeaders(params string[] headers)
         {
             _headers = [.. headers];
             _allowAnyHeader = false;
             return this;
-        } 
+        }
 
         public CorsConfigurationBuilder AllowedDomains(params string[] domains)
         {
             _domains = [.. domains];
             _allowAnyDomain = false;
             return this;
-        } 
+        }
 
         public CorsConfigurationBuilder AllowedOrigins(params string[] origins)
         {
@@ -46,10 +46,10 @@ namespace coer91.NET
             _allowAnyOrigin = false;
             return this;
         }
-         
 
-        public void Build() 
-        { 
+
+        public void Build()
+        {
             _builder.Services.AddCors(options =>
             {
                 CorsPolicyBuilder builder = new();
@@ -60,22 +60,22 @@ namespace coer91.NET
 
                 //HEADERS
                 if (_allowAnyHeader) builder.AllowAnyHeader();
-                else if(_headers.Length > 0) builder.WithHeaders(_headers);
-                
+                else if (_headers.Length > 0) builder.WithHeaders(_headers);
+
                 //CREDENTIALS
                 if (_allowCredentials) builder.AllowCredentials();
 
                 //ORIGIN & DOMAIN
-                if (_allowAnyOrigin) 
+                if (_allowAnyOrigin)
                 {
                     if (_allowAnyDomain) builder.SetIsOriginAllowed(origin => true);
-                    else builder.SetIsOriginAllowed(origin => _domains.Any(domain => origin.StartsWith(domain))); 
+                    else builder.SetIsOriginAllowed(origin => _domains.Any(domain => origin.StartsWith(domain)));
                 }
-                
-                else if(_origins.Length > 0) builder.WithOrigins(_origins);
+
+                else if (_origins.Length > 0) builder.WithOrigins(_origins);
 
                 options.AddPolicy(_policyName, builder.Build());
             });
         }
     }
-} 
+}

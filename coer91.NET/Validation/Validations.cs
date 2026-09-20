@@ -39,23 +39,12 @@ namespace coer91.NET
 
         #region IsString  
 
-        /// <summary>
-        /// 
-        /// </summary>
         public static bool IsString<T>(T obj)
            => obj is not null && IsString(obj.GetType());
-
-
-        /// <summary>
-        /// 
-        /// </summary>
+       
         public static bool IsString(PropertyInfo property)
            => property is not null && IsString(property.PropertyType);
-
-
-        /// <summary>
-        /// 
-        /// </summary>
+       
         public static bool IsString(Type type)
            => type == typeof(string);
 

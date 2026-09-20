@@ -10,19 +10,17 @@ namespace coer91.NET
             service.AddControllers().AddNewtonsoftJson(setup => setup.SerializerSettings.ContractResolver = new DefaultContractResolver
             {
                 NamingStrategy = new DefaultNamingStrategy()
-            });
-            
-            service.AddSingleton<AutoMapper>();
+            }); 
 
             service.AddEndpointsApiExplorer();
-            
+
             service.AddHttpContextAccessor();
-            
+
             service.AddExceptionFilter();
 
-            service.AddLogCode500();
+            service.AddLogRequest();
 
             return service;
         }
     }
-} 
+}

@@ -4,14 +4,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens; 
+using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 namespace coer91.NET
 {
     public class BearerConfigurationBuilder(string _secretKey, WebApplicationBuilder _builder)
     {
-        protected bool _setToControllers = false;
+        protected bool _setToControllers = true;
         protected bool _validateIssuer = false;
         protected bool _validateAudience = false;
         protected bool _validateLifetime = true;
@@ -77,7 +77,7 @@ namespace coer91.NET
                     ClockSkew = _clockSkew
                 });
 
-            if (_setToControllers) _builder.Services.AddControllers(config =>
+            if (_setToControllers && SwaggerConfigurationBuilder.securityDefinitionBearer) _builder.Services.AddControllers(config =>
             {
                 AuthorizationPolicy policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 AuthorizeFilter filter = new(policy);
@@ -85,4 +85,4 @@ namespace coer91.NET
             });
         }
     }
-} 
+}

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder; 
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.FileProviders;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace coer91.NET
@@ -12,6 +13,12 @@ namespace coer91.NET
 
             app.UseDeveloperExceptionPage();
 
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new EmbeddedFileProvider(typeof(SwaggerMiddleware).Assembly, "coer91.NET.Setup"),
+                RequestPath = "/swagger"
+            });
+
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
@@ -19,11 +26,16 @@ namespace coer91.NET
                 options.DocExpansion(DocExpansion.None);
                 options.DefaultModelsExpandDepth(-1);
 
-                if (SwaggerConfigurationBuilder.showDefaultGroup)
+                if(SwaggerConfigurationBuilder.showDefaultGroup)
                     options.SwaggerEndpoint($"/swagger/api/swagger.json", "WEB API");
 
                 foreach (var group in SwaggerConfigurationBuilder.groupList)
                     options.SwaggerEndpoint($"/swagger/{group}/swagger.json", group);
+
+                options.InjectStylesheet("/swagger/SwaggerMiddleware.css");
+
+                if (Security.IsProduction)
+                    options.InjectStylesheet("/swagger/SwaggerMiddleware.prod.css");
             });
 
             return app;

@@ -6,15 +6,15 @@ using Microsoft.Extensions.Hosting;
 using System.Reflection;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Text; 
+using System.Text;
 
 namespace coer91.NET
 {
     public class Security
     {
         private readonly WebApplicationBuilder _builder;
-        private readonly string _PolicyName = "coer91.NET"; 
-        public WebApplication _app; 
+        private readonly string _PolicyName = "COER91";
+        public WebApplication _app;
 
         public static string ProjectName { get; private set; } = Assembly.GetEntryAssembly()?.GetName()?.Name;
         public static bool IsDevelopment { get; private set; }
@@ -34,7 +34,7 @@ namespace coer91.NET
         public SwaggerConfigurationBuilder AddSwagger(string title = "")
         {
             if (!string.IsNullOrWhiteSpace(title))
-                ProjectName = title;
+                ProjectName = title; 
 
             return new(_builder);
         }
@@ -60,7 +60,7 @@ namespace coer91.NET
             _app.UseHttpsRedirection();
             _app.UseAuthentication();
             _app.UseAuthorization();
-            _app.UseLogCode500();
+            _app.UseLogRequest();
             _app.MapControllers();
             return _app;
         }
@@ -169,4 +169,4 @@ namespace coer91.NET
         public static bool EqualsHash(string data, byte[] salt, string hash) => GenerateHash(data, salt).Equals(hash);
         #endregion
     }
-} 
+}
